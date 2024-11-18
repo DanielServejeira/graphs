@@ -2,7 +2,8 @@
 #include<stdlib.h>
 
 #include "adjacency_list.h"
-#include "p_queue.h"
+#include "queue.h"
+#include "priority_queue.h"
 
 Graph list_create_graph(int n) {
     int i;

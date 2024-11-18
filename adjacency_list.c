@@ -2,7 +2,7 @@
 #include<stdlib.h>
 
 #include "adjacency_list.h"
-#include "queue.h"
+#include "p_queue.h"
 
 Graph list_create_graph(int n) {
     int i;
@@ -155,5 +155,27 @@ int *list_width_search(Graph g, int s) { //ARRUMAR
 
     destroy_queue(f);
     free(visited);
+    return parent;
+}
+
+int *dijkstra(Graph g, int s) {
+    int v, *parent = malloc(g->n * sizeof(int));
+    Graph_node t;
+    p_queue h = create_p_queue(g->n);
+    for (v = 0; v < g->n; v++) {
+        parent[v] = -1;
+        insert(h, v, INT_MAX);
+    }
+    parent[s] = s;
+    decrease_priority(h, s, 0);
+    while (!is_empty(h)) {
+        v = extract_min(h);
+        if (priority(h, v) != INT_MAX)
+            for (t = g->adjacency[v]; t != NULL; t = t->next)
+                if (priority(h, v) + t->weight < priority(h, t->v)) {
+                    decrease_priority(h, t->v, priority(h, v) + t->weight);
+                    parent[t->v] = v;
+                }
+    }
     return parent;
 }

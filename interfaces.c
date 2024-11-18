@@ -40,13 +40,13 @@ void run_portuguese_interface() {
     GraphType menu;
 
     printf("Insira uma opção:\n"
-           "\n[1] <- Lista de Adjacência"
-           "\n[2] <- Matriz de Adjacência\n\n");
+           "\n[1] <- Grafo de Lista de Adjacência"
+           "\n[2] <- Grafo de Matriz de Adjacência\n\n");
 
     while (scanf("%d", (int*)&menu) != 1 || menu < ADJACENCY_LIST || menu > ADJACENCY_MATRIX) {
         printf("Opção inválida. Por favor, selecione um tipo de grafo válido:\n"
-               "\n[1] <- Lista de Adjacência"
-               "\n[2] <- Matriz de Adjacência\n\n");
+               "\n[1] <- Grafo de Lista de Adjacência"
+               "\n[2] <- Grafo de Matriz de Adjacência\n\n");
         while (getchar() != '\n'); // Clear the input buffer
     }
 

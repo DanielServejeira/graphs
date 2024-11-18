@@ -2,6 +2,7 @@
 #include<stdlib.h>
 
 #include "adjacency_matrix.h"
+#include "queue.h"
 
 graph matrix_create_graph(int n) {
     int i, j;

@@ -2,6 +2,7 @@
 #include<stdlib.h>
 
 #include "adjacency_list.h"
+#include "queue.h"
 
 Graph list_create_graph(int n) {
     int i;
@@ -70,4 +71,89 @@ void list_print_edges(Graph g) {
     for (u=0; u < g->n; u++)
         for (t = g->adjacency[u]; t != NULL; t = t->next)
             printf("{%d,%d}\n", u, t->v);
+}
+
+void list_rec_search(Graph g, int *components , int comp, int v) {
+    Graph_node t;
+    components[v] = comp;
+
+    for (t = g->adj[v]; t != NULL; t = t->next)
+        if (components[t->v] == -1)
+            list_rec_search(g, components , comp, t->v);
+}
+
+int *list_find_components(Graph g) {
+    int s, c = 0, *components = malloc(g->n * sizeof(int));
+
+    for (s = 0; s < g->n; s++)
+        components[s] = -1;
+
+    for (s = 0; s < g->n; s++)
+        if (components[s] == -1) {
+            list_rec_search(g, components , c, s);
+            c++;
+    }
+
+    return components;
+}
+
+void list_in_depth_search(Graph g, int *parent, int p, int v) {
+    Graph_node t;
+    parent[v] = p;
+
+    for(t = g->adj[v]; t != NULL; t = t->next)
+        if (parent[t->v] == -1)
+            in_depth_search(g, parent, v, t->v);
+}
+
+int *list_find_paths(Graph g, int s) {
+    int i, *parent = malloc(g->n * sizeof(int));
+
+    for (i = 0; i < g->n; i++)
+        parent[i] = -1;
+
+    in_depth_search(g, parent, s, s);
+    return parent;
+}
+
+void list_print_reverse_path(int v, int *parent) {
+    printf("%d", v);
+    if(parent[v] != v)
+    print_reverse_path(parent[v], parent);
+}
+
+void list_print_path(int v, int *parent) {
+    if(parent[v] != v)
+        list_print_path(parent[v], parent);
+    printf("%d", v);
+}
+
+int *list_width_search(Graph g, int s) { //ARRUMAR
+    int w, v;
+    int *parent = malloc(g->n * sizeof(int));
+    int *visited = malloc(g->n * sizeof(int));
+    Queue f = create_queue();
+
+    for (v = 0; v < g->n; v++) {
+        parent[v] = -1;
+        visited[v] = 0;
+    }
+
+    enqueue(f,s);
+    parent[s] = s;
+    visited[s] = 1;
+
+    while(!empty_queue(f)) {
+        v = dequeue(f);
+        for (w = 0; w < g->n; w++)
+            if (g->adj[v][w] && !visited[w]) {
+                visited[w] = 1;
+                parent[w] = v;
+                enqueue(f, w);
+            }
+    }
+
+    destroy_queue(f);
+    free(visited);
+    return parent;
 }

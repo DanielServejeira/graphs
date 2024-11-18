@@ -1,7 +1,9 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-Graph create_graph(int n) {
+#include "adjacency_list.h"
+
+Graph list_create_graph(int n) {
     int i;
     Graph g = malloc(sizeof(Graph));
     g->n = n;
@@ -16,7 +18,7 @@ void free_list(Graph_node list) {
         free(list);
     }
 }
-void destroy_graph(Graph g) {
+void list_destroy_graph(Graph g) {
     int i;
     for (i = 0; i < g->n; i++)
         free_list(g->adjacency[i]);
@@ -31,39 +33,38 @@ Graph_node insert_to_list(Graph_node list, int v) {
     return new_node;
 }
 
-void insert_edge(Graph g, int u, int v) {
+void list_insert_edge(Graph g, int u, int v) {
     g->adjacency[v] = insert_to_list(g->adjacency[v], u);
     g->adjacency[u] = insert_to_list(g->adjacency[u], v);
 }
 
 Graph_node remove_from_list(Graph_node list, int v) {
-    Graph_node next;
-    if (list == NULL)
-        return NULL;
-    else if (list->v == v) {
-        next = list->adjacency;
+    if (list == NULL) return NULL;
+
+    if (list->v == v) {
+        Graph_node next = list->next;
         free(list);
         return next;
-    } else {
-        list->adjacency = remove_from_list(list->adjacency, v);
-        return list;
     }
+
+    list->next = remove_from_list(list->next, v);
+    return list;
 }
 
-void remove_edge(Graph g, int u, int v) {
+void list_remove_edge(Graph g, int u, int v) {
     g->adjacency[u] = remove_from_list(g->adjacency[u], v);
     g->adjacency[v] = remove_from_list(g->adjacency[v], u);
 }
 
-int have_edge(Graph g, int u, int v) {
-    Graph_node t;
-    for (t = g->adjacency[u]; t != NULL; t = t->adjacency)
+int list_have_edge(Graph g, int u, int v) {
+    for (Graph_node t = g->adjacency[u]; t != NULL; t = t->next) {
         if (t->v == v)
-    return 1;
+            return 1;
+    }
     return 0;
 }
 
-void print_edges(Graph g) {
+void list_print_edges(Graph g) {
     int u;
     Graph_node t;
     for (u=0; u < g->n; u++)

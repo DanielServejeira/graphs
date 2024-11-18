@@ -1,10 +1,12 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-graph create_graph(int n) {
+#include "adjacency_matrix.h"
+
+graph matrix_create_graph(int n) {
     int i, j;
 
-    graph g = malloc(sizeof(Adj_list));
+    graph g = malloc(sizeof(Adj_matrix));
     g->n = n;
     g->adj = malloc(n*sizeof(int *));
     for(i=0; i<n; i++) {
@@ -16,7 +18,7 @@ graph create_graph(int n) {
     return g;
 }
 
-void destroy_graph(graph g) {
+void matrix_destroy_matrix_graph(graph g) {
     int i;
     for (i = 0; i < g->n; i++)
         free(g->adj[i]);
@@ -24,19 +26,19 @@ void destroy_graph(graph g) {
     free(g);
 }
 
-void insert_edge(graph g, int u, int v) {
+void matrix_insert_edge(graph g, int u, int v) {
     g->adj[u][v] = 1;
     g->adj[v][u] = 1;
 }
-void remove_edge(graph g, int u, int v) {
+void matrix_remove_edge(graph g, int u, int v) {
     g->adj[u][v] = 0;
     g->adj[v][u] = 0;
 }
-int have_edge(graph g, int u, int v) {
+int matrix_have_edge(graph g, int u, int v) {
     return g->adj[u][v];
 }
 
-void print_edges(graph g) {
+void matrix_print_edges(graph g) {
     int u, v;
     for (u = 0; u < g->n; u++)
         for (v = u+1; v < g->n; v++)
@@ -44,19 +46,19 @@ void print_edges(graph g) {
                 printf("{%d,%d}\n", u, v);
 }
 
-graph read_graph() {
+graph matrix_read_graph() {
     int n, m, i, u, v;
     graph g;
     scanf("%d %d", &n, &m);
-    g = create_graph(n);
+    g = matrix_create_graph(n);
     for (i = 0; i < m; i++) {
         scanf("%d %d", &u, &v);
-        insert_edge(g, u, v);
+        matrix_insert_edge(g, u, v);
     }
     return g;
 }
 
-int degree(graph g, int u) {
+int matrix_degree(graph g, int u) {
     int v, degree = 0;
     for (v = 0; v < g->n; v++)
         if (g->adj[u][v])
@@ -64,12 +66,12 @@ int degree(graph g, int u) {
     return degree;
 }
 
-int most_popular(graph g) {
+int matrix_most_popular(graph g) {
     int u, max, max_degree , current_degree;
     max = 0;
-    max_degree = degree(g, 0);
+    max_degree = matrix_degree(g, 0);
     for (u = 1; u < g->n; u++) {
-        current_degree = degree(g, u);
+        current_degree = matrix_degree(g, u);
         if (current_degree > max_degree) {
             max_degree = current_degree;
             max = u;
@@ -78,7 +80,7 @@ int most_popular(graph g) {
     return max;
 }
 
-void print_recommendations(graph g, int u) {
+void matrix_print_recommendations(graph g, int u) {
     int v, w;
     for (v=0; v < g->n; v++) {
         if (g->adj[u][v]) {
@@ -90,22 +92,23 @@ void print_recommendations(graph g, int u) {
     }
 }
 
-int path_exists(graph g, int s, int t) {
+int matrix_path_exists(graph g, int s, int t) {
     int found , i, *visited = malloc(g->n * sizeof(int));
     for (i=0; i < g->n; i++)
         visited[i] = 0;
-    found = rec_search(g, visited , s, t);
+    found = matrix_rec_search(g, visited , s, t);
     free(visited);
     return found;
 }
-int rec_search(graph g, int *visited , int v, int t) {
+
+int matrix_rec_search(graph g, int *visited , int v, int t) {
     int w;
     if (v == t)
         return 1;
     visited[v] = 1;
     for (w=0; w < g->n; w++)
         if (g->adj[v][w] && !visited[w])
-            if (rec_search(g, visited , w, t))
+            if (matrix_rec_search(g, visited , w, t))
                 return 1;
     return 0;
 }

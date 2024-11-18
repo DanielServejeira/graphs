@@ -1,5 +1,5 @@
-#ifndef ADJACENCY_LIST
-#define ADJACENCY_LIST
+#ifndef ADJACENCY_LIST_H
+#define ADJACENCY_LIST_H
 
 typedef struct node {
     int v;
@@ -9,19 +9,17 @@ typedef struct node {
 typedef Node *Graph_node;
 
 typedef struct {
-    graph_node *adjacency;
+    Graph_node *adjacency;
     int n;
 } Adj_list;
 
 typedef Adj_list *Graph;
 
-Graph criar_grafo(int n);
-void destroy_graph(Graph g);
-void insert_edge(Graph g, int u, int v);
-void remove_edge(Graph g, int u, int v);
-int have_edge(Graph g, int u, int v);
-void print_edges(Graph g);
-
-#include "adjacency_list.c"
+Graph list_create_graph(int n);
+void list_destroy_graph(Graph g);
+void list_insert_edge(Graph g, int u, int v);
+void list_remove_edge(Graph g, int u, int v);
+int list_have_edge(Graph g, int u, int v);
+void list_print_edges(Graph g);
 
 #endif

@@ -1,7 +1,6 @@
 #include<stdio.h>
 
-#include "english_interface.h"
-#include "portuguese_interface.h"
+#include "interfaces.h"
 
 typedef enum {
     ENGLISH = 1,

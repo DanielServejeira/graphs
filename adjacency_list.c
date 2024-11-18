@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include<limits.h>
 
 #include "adjacency_list.h"
 #include "queue.h"
@@ -9,9 +10,9 @@ Graph list_create_graph(int n) {
     int i;
     Graph g = malloc(sizeof(Graph));
     g->n = n;
-    g->adjacency = malloc(n * sizeof(Graph_node));
+    g->adj = malloc(n * sizeof(Graph_node));
     for (i = 0; i < n; i++)
-        g->adjacency[i] = NULL;
+        g->adj[i] = NULL;
     return g;
 }
 void free_list(Graph_node list) {
@@ -23,8 +24,8 @@ void free_list(Graph_node list) {
 void list_destroy_graph(Graph g) {
     int i;
     for (i = 0; i < g->n; i++)
-        free_list(g->adjacency[i]);
-    free(g->adjacency);
+        free_list(g->adj[i]);
+    free(g->adj);
     free(g);
 }
 
@@ -36,8 +37,8 @@ Graph_node insert_to_list(Graph_node list, int v) {
 }
 
 void list_insert_edge(Graph g, int u, int v) {
-    g->adjacency[v] = insert_to_list(g->adjacency[v], u);
-    g->adjacency[u] = insert_to_list(g->adjacency[u], v);
+    g->adj[v] = insert_to_list(g->adj[v], u);
+    g->adj[u] = insert_to_list(g->adj[u], v);
 }
 
 Graph_node remove_from_list(Graph_node list, int v) {
@@ -54,12 +55,13 @@ Graph_node remove_from_list(Graph_node list, int v) {
 }
 
 void list_remove_edge(Graph g, int u, int v) {
-    g->adjacency[u] = remove_from_list(g->adjacency[u], v);
-    g->adjacency[v] = remove_from_list(g->adjacency[v], u);
+    if (u >= g->n || v >= g->n) return; // Verifica se os vértices são válidos
+    g->adj[u] = remove_from_list(g->adj[u], v);
+    g->adj[v] = remove_from_list(g->adj[v], u);
 }
 
 int list_have_edge(Graph g, int u, int v) {
-    for (Graph_node t = g->adjacency[u]; t != NULL; t = t->next) {
+    for (Graph_node t = g->adj[u]; t != NULL; t = t->next) {
         if (t->v == v)
             return 1;
     }
@@ -70,18 +72,18 @@ void list_print_edges(Graph g) {
     int u;
     Graph_node t;
     for (u=0; u < g->n; u++)
-        for (t = g->adjacency[u]; t != NULL; t = t->next)
+        for (t = g->adj[u]; t != NULL; t = t->next)
             printf("{%d,%d}\n", u, t->v);
 }
 
 void list_rec_search(Graph g, int *components , int comp, int v) {
     Graph_node t;
-    components[v] = comp;
+    components[v] = comp;           
 
     for (t = g->adj[v]; t != NULL; t = t->next)
         if (components[t->v] == -1)
             list_rec_search(g, components , comp, t->v);
-}
+}   
 
 int *list_find_components(Graph g) {
     int s, c = 0, *components = malloc(g->n * sizeof(int));
@@ -104,7 +106,7 @@ void list_in_depth_search(Graph g, int *parent, int p, int v) {
 
     for(t = g->adj[v]; t != NULL; t = t->next)
         if (parent[t->v] == -1)
-            in_depth_search(g, parent, v, t->v);
+            list_in_depth_search(g, parent, v, t->v);
 }
 
 int *list_find_paths(Graph g, int s) {
@@ -113,7 +115,7 @@ int *list_find_paths(Graph g, int s) {
     for (i = 0; i < g->n; i++)
         parent[i] = -1;
 
-    in_depth_search(g, parent, s, s);
+    list_in_depth_search(g, parent, s, s);
     return parent;
 }
 
@@ -130,10 +132,15 @@ void list_print_path(int v, int *parent) {
 }
 
 int *list_width_search(Graph g, int s) { //ARRUMAR
+    if (s < 0 || s >= g->n) {
+        fprintf(stderr, "Error: Invalid starting vertex.\n");
+        return NULL;
+    }
+    
     int w, v;
     int *parent = malloc(g->n * sizeof(int));
     int *visited = malloc(g->n * sizeof(int));
-    Queue f = create_queue();
+    Queue *f = create_queue(g->n);
 
     for (v = 0; v < g->n; v++) {
         parent[v] = -1;
@@ -146,12 +153,14 @@ int *list_width_search(Graph g, int s) { //ARRUMAR
 
     while(!empty_queue(f)) {
         v = dequeue(f);
-        for (w = 0; w < g->n; w++)
-            if (g->adj[v][w] && !visited[w]) {
+        for (Graph_node aux = g->adj[v]; aux != NULL; aux = aux->next){     //possivel erro
+            w = aux->v;
+            if (!visited[w]) {
                 visited[w] = 1;
                 parent[w] = v;
                 enqueue(f, w);
             }
+        }
     }
 
     destroy_queue(f);
@@ -172,11 +181,53 @@ int *dijkstra(Graph g, int s) {
     while (!is_empty(h)) {
         v = extract_min(h);
         if (priority(h, v) != INT_MAX)
-            for (t = g->adjacency[v]; t != NULL; t = t->next)
+            for (t = g->adj[v]; t != NULL; t = t->next)
                 if (priority(h, v) + t->weight < priority(h, t->v)) {
                     decrease_priority(h, t->v, priority(h, v) + t->weight);
                     parent[t->v] = v;
                 }
     }
     return parent;
+}
+
+int *list_width_search(Graph g, int s) {
+    // Verificar se o vértice inicial é válido
+    
+
+    int w, v;
+    int *parent = malloc(g->n * sizeof(int)); // Vetor para armazenar os pais
+    int *visited = malloc(g->n * sizeof(int)); // Vetor de vértices visitados
+    Queue *f = create_queue(g->n); // Cria a fila com capacidade igual ao número de vértices
+
+    // Inicializa os vetores de pais e visitados
+    for (v = 0; v < g->n; v++) {
+        parent[v] = -1;
+        visited[v] = 0;
+    }
+
+    // Adiciona o vértice inicial na fila
+    enqueue(f, s);
+    parent[s] = s; // O vértice inicial é seu próprio pai
+    visited[s] = 1; // Marca como visitado
+
+    // Realiza a busca em largura
+    while (!empty_queue(f)) {
+        v = dequeue(f); // Desenfileira um vértice
+
+        // Percorre a lista de adjacência do vértice v
+        for (Graph_node aux = g->adj[v]; aux != NULL; aux = aux->next) {
+            w = aux->v; // Obtém o índice do vértice adjacente
+            if (!visited[w]) { // Verifica se o vértice já foi visitado
+                visited[w] = 1; // Marca como visitado
+                parent[w] = v; // Define o pai
+                enqueue(f, w); // Enfileira o vértice adjacente
+            }
+        }
+    }
+
+    // Libera memória alocada para a fila e o vetor visited
+    destroy_queue(f);
+    free(visited);
+
+    return parent; // Retorna o vetor de pais
 }

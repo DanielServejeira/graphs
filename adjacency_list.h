@@ -9,7 +9,7 @@ typedef struct node {
 typedef Node *Graph_node;
 
 typedef struct {
-    Graph_node *adjacency;
+    Graph_node *adj;
     int n;
 } Adj_list;
 

@@ -29,16 +29,17 @@ void list_destroy_graph(Graph g) {
     free(g);
 }
 
-Graph_node insert_to_list(Graph_node list, int v) {
+Graph_node insert_to_list(Graph_node list, int v, int weight) {
     Graph_node new_node = malloc(sizeof(Node));
     new_node->v = v;
     new_node->next = list;
+    new_node->weight = weight;
     return new_node;
 }
 
-void list_insert_edge(Graph g, int u, int v) {
-    g->adj[v] = insert_to_list(g->adj[v], u);
-    g->adj[u] = insert_to_list(g->adj[u], v);
+void list_insert_edge(Graph g, int u, int v, int weight) {
+    g->adj[v] = insert_to_list(g->adj[v], u, weight);
+    g->adj[u] = insert_to_list(g->adj[u], v, weight);
 }
 
 Graph_node remove_from_list(Graph_node list, int v) {

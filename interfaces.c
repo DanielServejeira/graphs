@@ -43,6 +43,9 @@ void run_english_interface() {
 
                 scanf("%d", &choice);
                 
+                int n, u, v, weight, s;
+                int *components, *p, *path;
+
                 switch (choice)
                 {
                 case 0:
@@ -54,7 +57,6 @@ void run_english_interface() {
                         printf("Graph already exists. Please destroy it before creating a new one.\n\n");
                         break;
                     }
-                    int n;
                     printf("Enter the number of vertices: ");
                     scanf("%d", &n);
                     graph = list_create_graph(n);
@@ -78,10 +80,11 @@ void run_english_interface() {
                         printf("Graph does not exist. Please create it before inserting an edge.\n\n");
                         break;
                     }
-                    int u, v;
                     printf("Enter the vertices to insert the edge (u v): ");
                     scanf("%d %d", &u, &v);
-                    list_insert_edge(graph, u, v);
+                    printf("Enter the weight of the edge: ");
+                    scanf("%d", &weight);
+                    list_insert_edge(graph, u, v, weight);
                     printf("Edge inserted successfully.\n\n");
                     break;
 
@@ -126,7 +129,7 @@ void run_english_interface() {
                         printf("Graph does not exist. Please create it before finding its connected components.\n\n");
                         break;
                     }
-                    int *components = list_find_components(graph);
+                    components = list_find_components(graph);
                     printf("Graph has %d connected components.\n\n", components[0]);
                     free(components);
                     break;
@@ -137,11 +140,10 @@ void run_english_interface() {
                         printf("Graph does not exist. Please create it before finding paths.\n\n");
                         break;
                     }
-                    int s;
                     printf("Enter the source vertex: ");
                     scanf("%d", &s);
 
-                    int *p = (int *)malloc(graph->n * sizeof(int));
+                    p = (int *)malloc(graph->n * sizeof(int));
 
                     list_in_depth_search(graph, p, graph->adj[0], s);
                     for (int i = 0; i < graph->n; i++)
@@ -161,7 +163,7 @@ void run_english_interface() {
                     }
                     printf("Enter the destination vertex: ");
                     scanf("%d", &v);
-                    int *path = list_width_search(graph, v);
+                    path = list_width_search(graph, v);
                     printf("Shortest path from %d to %d: ", s, v);
                     list_print_reverse_path(v, path);
                     printf("\n");

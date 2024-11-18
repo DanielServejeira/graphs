@@ -22,7 +22,7 @@ void list_remove_edge(Graph g, int u, int v);
 int list_have_edge(Graph g, int u, int v);
 void list_print_edges(Graph g);
 void list_rec_search(Graph g, int *components, int comp, int v);
-void *list_find_components(Graph g, int *components);
+void *list_find_components(Graph g);
 void list_in_depth_search(Graph g, int *parent, int p, int v);
 int list_print_reverse_path(int v, int *parent);
 void list_print_path(int v, int *parent);

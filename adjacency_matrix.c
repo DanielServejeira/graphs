@@ -15,7 +15,7 @@ graph matrix_create_graph(int n) {
     }
     for (i = 0; i < n; i++)
         for (j = 0; j < n; j++)
-            g->adj[i][j] = 0;
+            g->adj[i][j] = -1;
     return g;
 }
 
@@ -27,9 +27,9 @@ void matrix_destroy_matrix_graph(graph g) {
     free(g);
 }
 
-void matrix_insert_edge(graph g, int u, int v) {
-    g->adj[u][v] = 1;
-    g->adj[v][u] = 1;
+void matrix_insert_edge(graph g, int u, int v, int weight) {
+    g->adj[u][v] = weight;
+    g->adj[v][u] = weight;
 }
 void matrix_remove_edge(graph g, int u, int v) {
     g->adj[u][v] = 0;
@@ -48,13 +48,13 @@ void matrix_print_edges(graph g) {
 }
 
 graph matrix_read_graph() {
-    int n, m, i, u, v;
+    int n, m, i, u, v, w;
     graph g;
     scanf("%d %d", &n, &m);
     g = matrix_create_graph(n);
     for (i = 0; i < m; i++) {
-        scanf("%d %d", &u, &v);
-        matrix_insert_edge(g, u, v);
+        scanf("%d %d %d", &u, &v, &w);
+        matrix_insert_edge(g, u, v, w);
     }
     return g;
 }

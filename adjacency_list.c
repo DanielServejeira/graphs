@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include<limits.h>
 
 #include "adjacency_list.h"
 #include "queue.h"
@@ -180,7 +181,7 @@ int *dijkstra(Graph g, int s) {
     while (!is_empty(h)) {
         v = extract_min(h);
         if (priority(h, v) != INT_MAX)
-            for (t = g->adjacency[v]; t != NULL; t = t->next)
+            for (t = g->adj[v]; t != NULL; t = t->next)
                 if (priority(h, v) + t->weight < priority(h, t->v)) {
                     decrease_priority(h, t->v, priority(h, v) + t->weight);
                     parent[t->v] = v;

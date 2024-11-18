@@ -10,7 +10,7 @@ typedef Adj_matrix *graph;
 
 graph matrix_create_graph(int n);
 void matrix_destroy_matrix_graph(graph g);
-void matrix_insert_edge(graph g, int u, int v);
+void matrix_insert_edge(graph g, int u, int v, int weight);
 void matrix_remove_edge(graph g, int u, int v);
 int matrix_have_edge(graph g, int u, int v);
 void matrix_print_edges(graph g);

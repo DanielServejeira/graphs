@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include<limits.h>
 
 #include "adjacency_matrix.h"
 #include "queue.h"
@@ -243,7 +244,73 @@ int matrix_rec_search(AdjMatrixGraph g, int *visited , int v, int t) {
     return 0;
 }
 
-int *matrix_width_search(AdjMatrixGraph g, int s){ // trocar para matrix_BFS
+/**
+ * @brief Finds the shortest path from a source vertex to all other vertices in the graph.
+ *
+ * This function finds the shortest path from a source vertex to all other vertices in the graph
+ * using Dijkstra's algorithm. It assigns a parent to each vertex in the graph.
+ *
+ * @param g The graph in which the shortest path is to be found.
+ * @param s The source vertex.
+ * @return An array containing the parent of each vertex.
+ */
+int *dijkstra(graph g, int s) {
+    int *dist = malloc(g->n * sizeof(int));
+    int *visited = malloc(g->n * sizeof(int));
+    int i, u, v, min_dist, next_node;
+
+    if (!dist || !visited) {
+        fprintf(stderr, "Erro ao alocar memória\n");
+        exit(EXIT_FAILURE);
+    }
+
+    for (i = 0; i < g->n; i++) {
+        dist[i] = INT_MAX;
+        visited[i] = 0;
+    }
+    dist[s] = 0;
+
+    for (i = 0; i < g->n - 1; i++) {
+        min_dist = INT_MAX;
+        next_node = -1;
+        for (v = 0; v < g->n; v++) {
+            if (!visited[v] && dist[v] < min_dist) {
+                min_dist = dist[v];
+                next_node = v;
+            }
+        }
+
+        if (next_node == -1) {
+            break;
+        }
+
+        visited[next_node] = 1;
+
+        for (v = 0; v < g->n; v++) {
+            if (!visited[v] && g->adj[next_node][v] &&
+                dist[next_node] != INT_MAX &&
+                dist[next_node] + g->adj[next_node][v] < dist[v]) {
+                dist[v] = dist[next_node] + g->adj[next_node][v];
+            }
+        }
+    }
+
+    free(visited);
+    return dist;  // Retorna as distâncias calculadas
+}
+
+/**
+ * @brief Performs a breadth-first search on the graph starting from a source vertex.
+ *
+ * This function performs a breadth-first search on the graph starting from a source vertex.
+ * It assigns a parent to each vertex in the graph and returns an array containing the parent
+ * of each vertex.
+ *
+ * @param g The graph in which the breadth-first search is to be performed.
+ * @param s The source vertex.
+ * @return An array containing the parent of each vertex.
+ */
+int *matrix_width_search(graph g, int s){ // trocar para matrix_BFS
     int *parent = malloc(g->n * sizeof(int));
     int *visited = malloc(g->n * sizeof(int));
     int w,v;
@@ -275,7 +342,15 @@ int *matrix_width_search(AdjMatrixGraph g, int s){ // trocar para matrix_BFS
     return parent; 
 }
 
-void matrix_in_depth_search(AdjMatrixGraph g, int* parent, int p, int v){
+/**
+ * @brief Prints the path from a vertex to the source vertex.
+ *
+ * This function prints the path from a vertex to the source vertex using the parent array.
+ *
+ * @param v The vertex for which the path is to be printed.
+ * @param parent An array containing the parent of each vertex.
+ */
+void matrix_in_depth_search(graph g, int* parent, int p, int v){
     parent[v] = p;
     int w;
     for(w = 0; w < g->n; w++){
@@ -285,7 +360,17 @@ void matrix_in_depth_search(AdjMatrixGraph g, int* parent, int p, int v){
     }
 }
 
-int *matrix_find_paths(AdjMatrixGraph g, int s){
+/**
+ * @brief Finds paths from a source vertex to all other vertices in the graph.
+ *
+ * This function finds paths from a source vertex to all other vertices in the graph using a depth-first search.
+ * It assigns a parent to each vertex in the graph.
+ *
+ * @param g The graph in which paths are to be found.
+ * @param s The source vertex.
+ * @return An array containing the parent of each vertex.
+ */
+int *matrix_find_paths(graph g, int s){
     int* parent = malloc (g->n * sizeof(int));
     int i;
 
@@ -296,7 +381,16 @@ int *matrix_find_paths(AdjMatrixGraph g, int s){
     return parent;
 }
 
-void matrix_recursive_visit(AdjMatrixGraph g, int *components, int count_comp, int v){
+/**
+ * @brief Finds the connected components of the graph.
+ *
+ * This function finds the connected components of the graph using a recursive depth-first search.
+ * It assigns a component number to each vertex in the graph.
+ *
+ * @param g The graph in which the connected components are to be found.
+ * @return An array containing the component number of each vertex.
+ */
+void matrix_recursive_visit(graph g, int *components, int count_comp, int v){
     components[v] = count_comp;
 
     for(int w = 0; w < g->n; w++){
@@ -306,7 +400,16 @@ void matrix_recursive_visit(AdjMatrixGraph g, int *components, int count_comp, i
     }
 }
 
-int *matrix_find_components(AdjMatrixGraph g){
+/**
+ * @brief Finds the connected components of the graph.
+ *
+ * This function finds the connected components of the graph using a recursive depth-first search.
+ * It assigns a component number to each vertex in the graph.
+ *
+ * @param g The graph in which the connected components are to be found.
+ * @return An array containing the component number of each vertex.
+ */
+int *matrix_find_components(graph g){
     int s, count_components = 0;
     int * components = malloc (g->n * sizeof(int));
     for(s = 0; s < g->n; s++){

@@ -292,6 +292,17 @@ int dijkstra(graph g, int s) {
     return 0;
 }
 
+/**
+ * @brief Performs a breadth-first search on the graph starting from a source vertex.
+ *
+ * This function performs a breadth-first search on the graph starting from a source vertex.
+ * It assigns a parent to each vertex in the graph and returns an array containing the parent
+ * of each vertex.
+ *
+ * @param g The graph in which the breadth-first search is to be performed.
+ * @param s The source vertex.
+ * @return An array containing the parent of each vertex.
+ */
 int *matrix_width_search(graph g, int s){ // trocar para matrix_BFS
     int *parent = malloc(g->n * sizeof(int));
     int *visited = malloc(g->n * sizeof(int));
@@ -324,6 +335,14 @@ int *matrix_width_search(graph g, int s){ // trocar para matrix_BFS
     return parent; 
 }
 
+/**
+ * @brief Prints the path from a vertex to the source vertex.
+ *
+ * This function prints the path from a vertex to the source vertex using the parent array.
+ *
+ * @param v The vertex for which the path is to be printed.
+ * @param parent An array containing the parent of each vertex.
+ */
 void matrix_in_depth_search(graph g, int* parent, int p, int v){
     parent[v] = p;
     int w;
@@ -334,6 +353,16 @@ void matrix_in_depth_search(graph g, int* parent, int p, int v){
     }
 }
 
+/**
+ * @brief Finds paths from a source vertex to all other vertices in the graph.
+ *
+ * This function finds paths from a source vertex to all other vertices in the graph using a depth-first search.
+ * It assigns a parent to each vertex in the graph.
+ *
+ * @param g The graph in which paths are to be found.
+ * @param s The source vertex.
+ * @return An array containing the parent of each vertex.
+ */
 int *matrix_find_paths(graph g, int s){
     int* parent = malloc (g->n * sizeof(int));
     int i;
@@ -345,6 +374,15 @@ int *matrix_find_paths(graph g, int s){
     return parent;
 }
 
+/**
+ * @brief Finds the connected components of the graph.
+ *
+ * This function finds the connected components of the graph using a recursive depth-first search.
+ * It assigns a component number to each vertex in the graph.
+ *
+ * @param g The graph in which the connected components are to be found.
+ * @return An array containing the component number of each vertex.
+ */
 void matrix_recursive_visit(graph g, int *components, int count_comp, int v){
     components[v] = count_comp;
 
@@ -355,6 +393,15 @@ void matrix_recursive_visit(graph g, int *components, int count_comp, int v){
     }
 }
 
+/**
+ * @brief Finds the connected components of the graph.
+ *
+ * This function finds the connected components of the graph using a recursive depth-first search.
+ * It assigns a component number to each vertex in the graph.
+ *
+ * @param g The graph in which the connected components are to be found.
+ * @return An array containing the component number of each vertex.
+ */
 int *matrix_find_components(graph g){
     int s, count_components = 0;
     int * components = malloc (g->n * sizeof(int));

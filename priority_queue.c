@@ -60,7 +60,7 @@ int extract_min(p_queue h) {
     return min_vertex;
 }
 
-int is_empty(p_queue h) {
+int is_prior_queue_empty(p_queue h) {
     return h->n == 0;
 }
 

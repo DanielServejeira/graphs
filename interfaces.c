@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <locale.h>
 
 #include "adjacency_list.h"
@@ -23,10 +24,10 @@ void run_english_interface() {
         while (getchar() != '\n'); // Clear the input buffer
     }
 
+    Graph graph = NULL;
+    int choice;
     switch(menu) {
         case ADJACENCY_LIST:
-            Adj_list *graph = NULL;
-            int choice;
             do
             {
                 printf("Adjacency list graph operations\n"
@@ -145,7 +146,7 @@ void run_english_interface() {
 
                     p = (int *)malloc(graph->n * sizeof(int));
 
-                    list_in_depth_search(graph, p, graph->adj[0], s);
+                    list_in_depth_search(graph, p, graph->adj[0]->v, s);
                     for (int i = 0; i < graph->n; i++)
                     {
                         printf("Path from %d to %d: ", s, i);

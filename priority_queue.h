@@ -17,7 +17,7 @@ p_queue create_p_queue(int size);
 void insert(p_queue h, int vertex, int priority);
 void decrease_priority(p_queue h, int vertex, int new_priority);
 int extract_min(p_queue h);
-int is_empty(p_queue h);
+int is_prior_queue_empty(p_queue h);
 int priority(p_queue h, int vertex);
 
 #endif

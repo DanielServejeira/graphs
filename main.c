@@ -17,7 +17,7 @@ int main() {
            "\n[2] Portuguese (Coming soon...)\n\n");
 
     while (scanf("%d", (int*)&language) != 1 || language < ENGLISH || language > PORTUGUESE) {
-        printf("Invalid option. Please select a valid language: "
+        printf("Invalid option. Please select a valzid language: "
                "\n[1] English"
                "\n[2] Portuguese (Coming soon...)\n\n");
         while (getchar() != '\n');

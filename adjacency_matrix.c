@@ -254,10 +254,15 @@ int matrix_rec_search(graph g, int *visited , int v, int t) {
  * @param s The source vertex.
  * @return An array containing the parent of each vertex.
  */
-int dijkstra(graph g, int s) {
+int *dijkstra(graph g, int s) {
     int *dist = malloc(g->n * sizeof(int));
     int *visited = malloc(g->n * sizeof(int));
     int i, u, v, min_dist, next_node;
+
+    if (!dist || !visited) {
+        fprintf(stderr, "Erro ao alocar memória\n");
+        exit(EXIT_FAILURE);
+    }
 
     for (i = 0; i < g->n; i++) {
         dist[i] = INT_MAX;
@@ -267,6 +272,7 @@ int dijkstra(graph g, int s) {
 
     for (i = 0; i < g->n - 1; i++) {
         min_dist = INT_MAX;
+        next_node = -1;
         for (v = 0; v < g->n; v++) {
             if (!visited[v] && dist[v] < min_dist) {
                 min_dist = dist[v];
@@ -274,22 +280,23 @@ int dijkstra(graph g, int s) {
             }
         }
 
+        if (next_node == -1) {
+            break;
+        }
+
         visited[next_node] = 1;
 
         for (v = 0; v < g->n; v++) {
-            if (!visited[v] && g->adj[next_node][v] && dist[next_node] != INT_MAX && dist[next_node] + g->adj[next_node][v] < dist[v]) {
+            if (!visited[v] && g->adj[next_node][v] &&
+                dist[next_node] != INT_MAX &&
+                dist[next_node] + g->adj[next_node][v] < dist[v]) {
                 dist[v] = dist[next_node] + g->adj[next_node][v];
             }
         }
     }
 
-    for (i = 0; i < g->n; i++) {
-        printf("Distance from node %d to node %d is %d\n", s, i, dist[i]);
-    }
-
-    free(dist);
     free(visited);
-    return 0;
+    return dist;  // Retorna as distâncias calculadas
 }
 
 /**

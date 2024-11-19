@@ -3,7 +3,18 @@
 
 #include "adjacency_matrix.h"
 #include "queue.h"
+#include "priority_queue.h"
 
+/**
+ * @brief Creates a graph represented by an adjacency matrix.
+ *
+ * This function allocates memory for a graph structure and initializes
+ * its adjacency matrix. The matrix is initialized with -1 to indicate
+ * that there are no edges between any vertices initially.
+ *
+ * @param n The number of vertices in the graph.
+ * @return A pointer to the created graph structure.
+ */
 graph matrix_create_graph(int n) {
     int i, j;
 
@@ -19,6 +30,16 @@ graph matrix_create_graph(int n) {
     return g;
 }
 
+/**
+ * @brief Destroys a graph represented by an adjacency matrix.
+ *
+ * This function deallocates the memory used by the adjacency matrix of the graph
+ * and the graph structure itself. It iterates through each row of the adjacency
+ * matrix, freeing the memory allocated for each row, then frees the memory allocated
+ * for the adjacency matrix array, and finally frees the memory allocated for the graph structure.
+ *
+ * @param g A pointer to the graph structure to be destroyed.
+ */
 void matrix_destroy_matrix_graph(graph g) {
     int i;
     for (i = 0; i < g->n; i++)
@@ -27,18 +48,59 @@ void matrix_destroy_matrix_graph(graph g) {
     free(g);
 }
 
+/**
+ * @brief Inserts an edge into the adjacency matrix of the graph.
+ *
+ * This function adds an edge between two vertices in the graph with a specified weight.
+ * It updates the adjacency matrix to reflect the new edge.
+ *
+ * @param g The graph in which the edge is to be inserted.
+ * @param u The first vertex of the edge.
+ * @param v The second vertex of the edge.
+ * @param weight The weight of the edge.
+ */
 void matrix_insert_edge(graph g, int u, int v, int weight) {
     g->adj[u][v] = weight;
     g->adj[v][u] = weight;
 }
+
+/**
+ * @brief Removes an edge from the adjacency matrix of the graph.
+ *
+ * This function removes an edge between two vertices in the graph. It updates the adjacency
+ * matrix to reflect the removal of the edge.
+ *
+ * @param g The graph from which the edge is to be removed.
+ * @param u The first vertex of the edge.
+ * @param v The second vertex of the edge.
+ */
 void matrix_remove_edge(graph g, int u, int v) {
     g->adj[u][v] = 0;
     g->adj[v][u] = 0;
 }
+
+/**
+ * @brief Checks if an edge exists between two vertices in the graph.
+ *
+ * This function checks if an edge exists between two vertices in the graph.
+ *
+ * @param g The graph in which the edge is to be checked.
+ * @param u The first vertex of the edge.
+ * @param v The second vertex of the edge.
+ * @return 1 if the edge exists, 0 otherwise.
+ */
 int matrix_have_edge(graph g, int u, int v) {
     return g->adj[u][v];
 }
 
+/**
+ * @brief Prints the edges of the graph represented by an adjacency matrix.
+ *
+ * This function prints the edges of the graph represented by an adjacency matrix.
+ * It iterates through the adjacency matrix and prints the edges that have a non-zero weight.
+ *
+ * @param g The graph whose edges are to be printed.
+ */
 void matrix_print_edges(graph g) {
     int u, v;
     for (u = 0; u < g->n; u++)
@@ -47,6 +109,15 @@ void matrix_print_edges(graph g) {
                 printf("{%d,%d}\n", u, v);
 }
 
+/**
+ * @brief Reads a graph from standard input.
+ *
+ * This function reads a graph from standard input. It first reads the number of vertices
+ * and edges in the graph, then reads the edges and their weights. It creates a graph
+ * represented by an adjacency matrix and inserts the edges into the graph.
+ *
+ * @return The graph read from standard input.
+ */
 graph matrix_read_graph() {
     int n, m, i, u, v, w;
     graph g;
@@ -59,6 +130,17 @@ graph matrix_read_graph() {
     return g;
 }
 
+/**
+ * @brief Calculates the degree of a vertex in the graph.
+ *
+ * This function calculates the degree of a vertex in the graph, i.e., the number of edges
+ * incident on the vertex. It iterates through the row of the adjacency matrix corresponding
+ * to the vertex and counts the number of non-zero entries.
+ *
+ * @param g The graph in which the degree is to be calculated.
+ * @param u The vertex whose degree is to be calculated.
+ * @return The degree of the vertex.
+ */
 int matrix_degree(graph g, int u) {
     int v, degree = 0;
     for (v = 0; v < g->n; v++)
@@ -67,6 +149,16 @@ int matrix_degree(graph g, int u) {
     return degree;
 }
 
+/**
+ * @brief Finds the most popular vertex in the graph.
+ *
+ * This function finds the most popular vertex in the graph, i.e., the vertex with the highest degree.
+ * It iterates through all vertices in the graph, calculates the degree of each vertex, and keeps track
+ * of the vertex with the highest degree.
+ *
+ * @param g The graph in which the most popular vertex is to be found.
+ * @return The most popular vertex in the graph.
+ */
 int matrix_most_popular(graph g) {
     int u, max, max_degree , current_degree;
     max = 0;
@@ -81,6 +173,16 @@ int matrix_most_popular(graph g) {
     return max;
 }
 
+/**
+ * @brief Prints recommendations for a vertex in the graph.
+ *
+ * This function prints recommendations for a vertex in the graph. It iterates through the
+ * neighbors of the vertex, then iterates through the neighbors of each neighbor, and prints
+ * the neighbors of the neighbors that are not neighbors of the original vertex.
+ *
+ * @param g The graph for which recommendations are to be printed.
+ * @param u The vertex for which recommendations are to be printed.
+ */
 void matrix_print_recommendations(graph g, int u) {
     int v, w;
     for (v=0; v < g->n; v++) {
@@ -93,6 +195,19 @@ void matrix_print_recommendations(graph g, int u) {
     }
 }
 
+/**
+ * @brief Checks if a path exists between two vertices in the graph.
+ *
+ * This function checks if a path exists between two vertices in the graph. It uses a recursive
+ * depth-first search to explore the graph starting from the source vertex and marks visited
+ * vertices. If the target vertex is reached during the search, the function returns 1, indicating
+ * that a path exists between the source and target vertices.
+ *
+ * @param g The graph in which the path is to be checked.
+ * @param s The source vertex.
+ * @param t The target vertex.
+ * @return 1 if a path exists between the source and target vertices, 0 otherwise.
+ */
 int matrix_path_exists(graph g, int s, int t) {
     int found , i, *visited = malloc(g->n * sizeof(int));
     for (i=0; i < g->n; i++)
@@ -102,6 +217,20 @@ int matrix_path_exists(graph g, int s, int t) {
     return found;
 }
 
+/**
+ * @brief Recursive depth-first search to check if a path exists between two vertices.
+ *
+ * This function performs a recursive depth-first search to check if a path exists between two
+ * vertices in the graph. It marks visited vertices to avoid revisiting them and explores the
+ * graph starting from the source vertex. If the target vertex is reached during the search, the
+ * function returns 1, indicating that a path exists between the source and target vertices.
+ *
+ * @param g The graph in which the path is to be checked.
+ * @param visited An array to keep track of visited vertices.
+ * @param v The current vertex being visited.
+ * @param t The target vertex.
+ * @return 1 if a path exists between the source and target vertices, 0 otherwise.
+ */
 int matrix_rec_search(graph g, int *visited , int v, int t) {
     int w;
     if (v == t)

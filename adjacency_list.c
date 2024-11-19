@@ -292,7 +292,7 @@ void list_print_path(int v, int *parent) {
  * @param s The source vertex.
  * @return An array containing the parent of each vertex.
  */
-int *dijkstra(AdjListGraph g, int s) {
+int *list_dijkstra(AdjListGraph g, int s) {
     int v, *parent = malloc(g->n * sizeof(int));
     Graph_node t;
     p_queue h = create_p_queue(g->n);

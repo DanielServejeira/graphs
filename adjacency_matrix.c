@@ -254,10 +254,10 @@ int matrix_rec_search(AdjMatrixGraph g, int *visited , int v, int t) {
  * @param s The source vertex.
  * @return An array containing the parent of each vertex.
  */
-int *dijkstra(graph g, int s) {
+int *matrix_dijkstra(AdjMatrixGraph g, int s) {
     int *dist = malloc(g->n * sizeof(int));
     int *visited = malloc(g->n * sizeof(int));
-    int i, u, v, min_dist, next_node;
+    int i, v, min_dist, next_node;
 
     if (!dist || !visited) {
         fprintf(stderr, "Erro ao alocar memória\n");
@@ -310,7 +310,7 @@ int *dijkstra(graph g, int s) {
  * @param s The source vertex.
  * @return An array containing the parent of each vertex.
  */
-int *matrix_width_search(graph g, int s){ // trocar para matrix_BFS
+int *matrix_width_search(AdjMatrixGraph g, int s){ // trocar para matrix_BFS
     int *parent = malloc(g->n * sizeof(int));
     int *visited = malloc(g->n * sizeof(int));
     int w,v;
@@ -350,7 +350,7 @@ int *matrix_width_search(graph g, int s){ // trocar para matrix_BFS
  * @param v The vertex for which the path is to be printed.
  * @param parent An array containing the parent of each vertex.
  */
-void matrix_in_depth_search(graph g, int* parent, int p, int v){
+void matrix_in_depth_search(AdjMatrixGraph g, int* parent, int p, int v){
     parent[v] = p;
     int w;
     for(w = 0; w < g->n; w++){
@@ -370,7 +370,7 @@ void matrix_in_depth_search(graph g, int* parent, int p, int v){
  * @param s The source vertex.
  * @return An array containing the parent of each vertex.
  */
-int *matrix_find_paths(graph g, int s){
+int *matrix_find_paths(AdjMatrixGraph g, int s){
     int* parent = malloc (g->n * sizeof(int));
     int i;
 
@@ -390,7 +390,7 @@ int *matrix_find_paths(graph g, int s){
  * @param g The graph in which the connected components are to be found.
  * @return An array containing the component number of each vertex.
  */
-void matrix_recursive_visit(graph g, int *components, int count_comp, int v){
+void matrix_recursive_visit(AdjMatrixGraph g, int *components, int count_comp, int v){
     components[v] = count_comp;
 
     for(int w = 0; w < g->n; w++){
@@ -409,7 +409,7 @@ void matrix_recursive_visit(graph g, int *components, int count_comp, int v){
  * @param g The graph in which the connected components are to be found.
  * @return An array containing the component number of each vertex.
  */
-int *matrix_find_components(graph g){
+int *matrix_find_components(AdjMatrixGraph g){
     int s, count_components = 0;
     int * components = malloc (g->n * sizeof(int));
     for(s = 0; s < g->n; s++){

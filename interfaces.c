@@ -46,13 +46,14 @@ void run_english_interface() {
         while (getchar() != '\n'); // Clear the input buffer
     }
 
-    Graph graph = NULL;
+    AdjListGraph adj_list_graph = NULL;
+    AdjMatrixGraph adj_matrix_graph = NULL;
     int choice;
     switch(menu) {
         case ADJACENCY_LIST:
             do
             {
-                printf("Adjacency list graph operations\n"
+                printf("Adjacency LIST graph operations\n"
                        "\n[1] <- Create graph"
                        "\n[2] <- Destroy graph"
                        "\n[3] <- Insert edge"
@@ -75,30 +76,30 @@ void run_english_interface() {
                     break;
 
                 case 1:
-                    if (graph != NULL)
+                    if (adj_list_graph != NULL)
                     {
                         printf("Graph already exists. Please destroy it before creating a new one.\n\n");
                         break;
                     }
                     printf("Enter the number of vertices: ");
                     scanf("%d", &n);
-                    graph = list_create_graph(n);
+                    adj_list_graph = list_create_graph(n);
                     printf("Graph created successfully.\n\n");
                     break;
 
                 case 2:
-                    if (graph == NULL)
+                    if (adj_list_graph == NULL)
                     {
                         printf("Graph does not exist. Please create it before destroying it.\n\n");
                         break;
                     }
-                    list_destroy_graph(graph);
-                    graph = NULL;
+                    list_destroy_graph(adj_list_graph);
+                    adj_list_graph = NULL;
                     printf("Graph destroyed successfully.\n\n");
                     break;
 
                 case 3:
-                    if (graph == NULL)
+                    if (adj_list_graph == NULL)
                     {
                         printf("Graph does not exist. Please create it before inserting an edge.\n\n");
                         break;
@@ -107,58 +108,58 @@ void run_english_interface() {
                     scanf("%d %d", &u, &v);
                     printf("Enter the weight of the edge: ");
                     scanf("%d", &weight);
-                    list_insert_edge(graph, u, v, weight);
+                    list_insert_edge(adj_list_graph, u, v, weight);
                     printf("Edge inserted successfully.\n\n");
                     break;
 
                 case 4:
-                    if (graph == NULL)
+                    if (adj_list_graph == NULL)
                     {
                         printf("Graph does not exist. Please create it before removing an edge.\n\n");
                         break;
                     }
                     printf("Enter the vertices to remove the edge (u v): ");
                     scanf("%d %d", &u, &v);
-                    list_remove_edge(graph, u, v);
+                    list_remove_edge(adj_list_graph, u, v);
                     printf("Edge removed successfully.\n\n");
                     break;
 
                 case 5:
-                    if (graph == NULL)
+                    if (adj_list_graph == NULL)
                     {
                         printf("Graph does not exist. Please create it before checking if an edge exists.\n\n");
                         break;
                     }
                     printf("Enter the vertices to check if the edge exists (u v): ");
                     scanf("%d %d", &u, &v);
-                    if (list_have_edge(graph, u, v))
+                    if (list_have_edge(adj_list_graph, u, v))
                         printf("The edge {%d,%d} exists.\n\n", u, v);
                     else
                         printf("The edge {%d,%d} does not exist.\n\n", u, v);
                     break;
 
                 case 6:
-                    if (graph == NULL)
+                    if (adj_list_graph == NULL)
                     {
                         printf("Graph does not exist. Please create it before printing its edges.\n\n");
                         break;
                     }
-                    list_print_edges(graph);
+                    list_print_edges(adj_list_graph);
                     break;
 
                 case 7:
-                    if (graph == NULL)
+                    if (adj_list_graph == NULL)
                     {
                         printf("Graph does not exist. Please create it before finding its connected components.\n\n");
                         break;
                     }
-                    components = list_find_components(graph);
+                    components = list_find_components(adj_list_graph);
                     printf("Graph has %d connected components.\n\n", components[0]);
                     free(components);
                     break;
 
                 case 8:
-                    if (graph == NULL)
+                    if (adj_list_graph == NULL)
                     {
                         printf("Graph does not exist. Please create it before finding paths.\n\n");
                         break;
@@ -166,10 +167,10 @@ void run_english_interface() {
                     printf("Enter the source vertex: ");
                     scanf("%d", &s);
 
-                    p = (int *)malloc(graph->n * sizeof(int));
+                    p = (int *)malloc(adj_list_graph->n * sizeof(int));
 
-                    list_in_depth_search(graph, p, graph->adj[0]->v, s);
-                    for (int i = 0; i < graph->n; i++)
+                    list_in_depth_search(adj_list_graph, p, adj_list_graph->adj[0]->v, s);
+                    for (int i = 0; i < adj_list_graph->n; i++)
                     {
                         printf("Path from %d to %d: ", s, i);
                         list_print_path(i, p);
@@ -179,14 +180,14 @@ void run_english_interface() {
                     break;
 
                 case 9:
-                    if (graph == NULL)
+                    if (adj_list_graph == NULL)
                     {
                         printf("Graph does not exist. Please create it before finding the shortest path.\n\n");
                         break;
                     }
                     printf("Enter the destination vertex: ");
                     scanf("%d", &v);
-                    path = list_width_search(graph, v);
+                    path = list_width_search(adj_list_graph, v);
                     printf("Shortest path from %d to %d: ", s, v);
                     list_print_reverse_path(v, path);
                     printf("\n");
@@ -202,7 +203,202 @@ void run_english_interface() {
             break;
 
         case ADJACENCY_MATRIX:
+            do
+            {
+                printf("Adjacency MATRIX graph operations\n"
+                       "\n[1] <- Create graph"
+                       "\n[2] <- Destroy graph"
+                       "\n[3] <- Insert edge"
+                       "\n[4] <- Remove edge"
+                       "\n[5] <- Check if edge exists"
+                       "\n[6] <- Print edges"
+                       "\n[7] <- Get vertex degree"
+                       "\n[8] <- Find most popular vertex"
+                       "\n[9] <- Print recommendations"
+                       "\n[10] <- Check if path exists"
+                       "\n[11] <- Breadth First Search"
+                       "\n[12] <- Depth First Search"
+                       "\n[13] <- Find connected components"
+                       "\n[0] <- Exit\n\n");
 
+                scanf("%d", &choice);
+                
+                int n, u, v, weight, s;
+                int *components, *p;
+
+                switch (choice)
+                {
+                case 0:
+                    break;
+
+                case 1:
+                    if (adj_matrix_graph != NULL)
+                    {
+                        printf("Graph already exists. Please destroy it before creating a new one.\n\n");
+                        break;
+                    }
+                    printf("Enter the number of vertices: ");
+                    scanf("%d", &n);
+                    adj_matrix_graph = matrix_create_graph(n);
+                    printf("Graph created successfully.\n\n");
+                    break;
+
+                case 2:
+                    if (adj_matrix_graph == NULL)
+                    {
+                        printf("Graph does not exist. Please create it before destroying it.\n\n");
+                        break;
+                    }
+                    matrix_destroy_graph(adj_matrix_graph);
+                    adj_matrix_graph = NULL;
+                    printf("Graph destroyed successfully.\n\n");
+                    break;
+
+                case 3:
+                    if (adj_matrix_graph == NULL)
+                    {
+                        printf("Graph does not exist. Please create it before inserting an edge.\n\n");
+                        break;
+                    }
+                    printf("Enter the vertices to insert the edge (u v): ");
+                    scanf("%d %d", &u, &v);
+                    printf("Enter the weight of the edge: ");
+                    scanf("%d", &weight);
+                    matrix_insert_edge(adj_matrix_graph, u, v, weight);
+                    printf("Edge inserted successfully.\n\n");
+                    break;
+
+                case 4:
+                    if (adj_matrix_graph == NULL)
+                    {
+                        printf("Graph does not exist. Please create it before removing an edge.\n\n");
+                        break;
+                    }
+                    printf("Enter the vertices to remove the edge (u v): ");
+                    scanf("%d %d", &u, &v);
+                    matrix_remove_edge(adj_matrix_graph, u, v);
+                    printf("Edge removed successfully.\n\n");
+                    break;
+
+                case 5:
+                    if (adj_matrix_graph == NULL)
+                    {
+                        printf("Graph does not exist. Please create it before checking if an edge exists.\n\n");
+                        break;
+                    }
+                    printf("Enter the vertices to check if the edge exists (u v): ");
+                    scanf("%d %d", &u, &v);
+                    if (matrix_have_edge(adj_matrix_graph, u, v))
+                        printf("The edge {%d,%d} exists.\n\n", u, v);
+                    else
+                        printf("The edge {%d,%d} does not exist.\n\n", u, v);
+                    break;
+
+                case 6:
+                    if (adj_matrix_graph == NULL)
+                    {
+                        printf("Graph does not exist. Please create it before printing its edges.\n\n");
+                        break;
+                    }
+                    matrix_print_edges(adj_matrix_graph);
+                    break;
+
+                case 7:
+                    if (adj_matrix_graph == NULL)
+                    {
+                        printf("Graph does not exist. Please create it before finding the degree of a vertex.\n\n");
+                        break;
+                    }
+                    printf("Enter the vertex to find its degree: ");
+                    scanf("%d", &u);
+                    printf("The degree of vertex %d is %d.\n\n", u, matrix_degree(adj_matrix_graph, u));
+                    break;
+
+                case 8:
+                    if (adj_matrix_graph == NULL)
+                    {
+                        printf("Graph does not exist. Please create it before finding the most popular vertex.\n\n");
+                        break;
+                    }
+                    printf("The most popular vertex is %d.\n\n", matrix_most_popular(adj_matrix_graph));
+                    break;
+
+                case 9:
+                    if (adj_matrix_graph == NULL)
+                    {
+                        printf("Graph does not exist. Please create it before printing recommendations.\n\n");
+                        break;
+                    }
+                    printf("Enter the vertex to print recommendations: ");
+                    scanf("%d", &u);
+                    matrix_print_recommendations(adj_matrix_graph, u);
+                    break;
+
+                case 10:
+                    if (adj_matrix_graph == NULL)
+                    {
+                        printf("Graph does not exist. Please create it before checking if a path exists.\n\n");
+                        break;
+                    }
+                    printf("Enter the source and target vertices to check if a path exists (s t): ");
+                    scanf("%d %d", &s, &v);
+                    if (matrix_path_exists(adj_matrix_graph, s, v))
+                        printf("A path exists between %d and %d.\n\n", s, v);
+                    else
+                        printf("No path exists between %d and %d.\n\n", s, v);
+                    break;
+
+                case 11:
+                    if (adj_matrix_graph == NULL)
+                    {
+                        printf("Graph does not exist. Please create it before performing a breadth-first search.\n\n");
+                        break;
+                    }
+                    printf("Enter the source vertex: ");
+                    scanf("%d", &s);
+                    p = matrix_width_search(adj_matrix_graph, s);
+                    printf("Shortest path from %d to %d: ", s, v);
+                    matrix_print_reverse_path(v, p);
+                    printf("\n");
+                    free(p);
+                    break;
+
+                case 12:
+                    if (adj_matrix_graph == NULL)
+                    {
+                        printf("Graph does not exist. Please create it before performing a depth-first search.\n\n");
+                        break;
+                    }
+                    printf("Enter the source vertex: ");
+                    scanf("%d", &s);
+                    p = (int *)malloc(adj_matrix_graph->n * sizeof(int));
+                    p = matrix_find_paths(adj_matrix_graph, s);
+                    for (int i = 0; i < adj_matrix_graph->n; i++)
+                    {
+                        printf("Path from %d to %d: ", s, i);
+                        matrix_print_path(i, p);
+                        printf("\n");
+                    }
+                    free(p);
+                    break;
+
+                case 13:
+                    if (adj_matrix_graph == NULL)
+                    {
+                        printf("Graph does not exist. Please create it before finding its connected components.\n\n");
+                        break;
+                    }
+                    components = matrix_find_components(adj_matrix_graph);
+                    printf("Graph has %d connected components.\n\n", components[0]);
+                    free(components);
+                    break;
+
+                default:
+                    printf("Invalid option. Please select a valid operation.\n\n");
+                    break;
+                }
+            } while (choice != 0);
+            
             break;
     }
 }

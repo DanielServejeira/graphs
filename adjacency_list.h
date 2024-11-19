@@ -14,6 +14,11 @@ typedef struct {
     int n;
 } Adj_list;
 
+typedef struct {
+    int *parent;
+    int *distance;
+} Path;
+
 typedef Adj_list *Graph;
 
 Graph list_create_graph(int n);
@@ -33,6 +38,6 @@ int degree_ListAdj(Graph g, int u);
 int most_popular_List(Graph g);
 void print_recommendations(Graph g, int u);
 int has_path_List(Graph g, int start, int end);
-
+Path prim_minimum_spanning_tree_la(Graph g, int start);
 
 #endif

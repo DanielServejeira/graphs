@@ -4,6 +4,7 @@
 typedef struct {
     int **adj;
     int n;
+    int weight;
 }Adj_matrix;
 
 typedef Adj_matrix *graph;

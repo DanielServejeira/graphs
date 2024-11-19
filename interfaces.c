@@ -10,6 +10,28 @@ typedef enum {
     ADJACENCY_MATRIX
 } GraphType;
 
+
+/**
+ * @brief Runs the English interface for graph operations.
+ *
+ * This function presents a menu to the user to select the type of graph representation
+ * (Adjacency List or Adjacency Matrix) and then provides various operations that can be
+ * performed on the selected graph type. The user can create, destroy, insert edges, remove edges,
+ * check if an edge exists, print edges, find connected components, find paths, and find the shortest path.
+ *
+ * The function uses a loop to continuously prompt the user for input until the user chooses to exit.
+ *
+ * Operations for Adjacency List Graph:
+ * - Create graph
+ * - Destroy graph
+ * - Insert edge
+ * - Remove edge
+ * - Check if edge exists
+ * - Print edges
+ * - Find connected components
+ * - Find paths
+ * - Find shortest path
+ */
 void run_english_interface() {
     GraphType menu;
 
@@ -185,6 +207,17 @@ void run_english_interface() {
     }
 }
 
+
+/**
+ * @brief Runs the Portuguese interface for selecting the graph type.
+ *
+ * This function sets the locale to Portuguese and prompts the user to select a type of graph.
+ * The user can choose between an adjacency list graph or an adjacency matrix graph.
+ * The function ensures that the user input is valid and handles invalid inputs by prompting the user again.
+ *
+ * @param None
+ * @return None
+ */
 void run_portuguese_interface() {
     setlocale(LC_ALL, "Portuguese");
 

@@ -425,12 +425,28 @@ int *matrix_find_components(graph g){
     return components;
 }
 
+/**
+ * @brief Prints the path from a vertex to the source vertex.
+ *
+ * This function prints the path from a vertex to the source vertex using the parent array.
+ *
+ * @param v The vertex for which the path is to be printed.
+ * @param parent An array containing the parent of each vertex.
+ */
 void matrix_print_reverse_path(int v, int *parent) {
     printf("%d", v);
     if(parent[v] != v)
     matrix_print_reverse_path(parent[v], parent);
 }
 
+/**
+ * @brief Prints the path from the source vertex to a vertex.
+ *
+ * This function prints the path from the source vertex to a vertex using the parent array.
+ *
+ * @param v The vertex for which the path is to be printed.
+ * @param parent An array containing the parent of each vertex.
+ */
 void matrix_print_path(int v, int *parent) {
     if(parent[v] != v)
         matrix_print_path(parent[v], parent);

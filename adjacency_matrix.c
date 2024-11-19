@@ -27,7 +27,7 @@ graph matrix_create_graph(int n) {
     }
     for (i = 0; i < n; i++)
         for (j = 0; j < n; j++)
-            g->adj[i][j] = -1;
+            g->adj[i][j] = 0;
     return g;
 }
 
@@ -292,3 +292,81 @@ int dijkstra(graph g, int s) {
     return 0;
 }
 
+int *matrix_width_search(graph g, int s){ // trocar para matrix_BFS
+    int *parent = malloc(g->n * sizeof(int));
+    int *visited = malloc(g->n * sizeof(int));
+    int w,v;
+    Queue *f = create_queue(g->n);
+
+    for(v = 0; v < g->n ; v++){
+        parent[v] = -1;
+        visited[v] = 0;
+    }
+
+    enqueue(f,s);
+    parent[s] = s;
+    visited[s] = 1;
+
+    while(!empty_queue(f)){
+        v = dequeue(f);
+
+        for(w = 0; w < g->n; w++){
+            if(g->adj[v][w] != -1 && !visited[w]){
+                visited[w] = 1; 
+                parent[w] = v; 
+                enqueue(f, w); 
+            }
+        }
+    }
+    destroy_queue(f);
+    free(visited);
+
+    return parent; 
+}
+
+void matrix_in_depth_search(graph g, int* parent, int p, int v){
+    parent[v] = p;
+    int w;
+    for(w = 0; w < g->n; w++){
+        if(g->adj[v][w] != 0 && parent[w] == -1){
+            matrix_in_depth_search(g, parent, v, w);
+        }
+    }
+}
+
+int *matrix_find_paths(graph g, int s){
+    int* parent = malloc (g->n * sizeof(int));
+    int i;
+
+    for(i = 0; i < g->n; i++){
+        parent[i] = -1;
+    }
+    matrix_in_depth_search(g,parent,s,s);
+    return parent;
+}
+
+void matrix_recursive_visit(graph g, int *components, int count_comp, int v){
+    components[v] = count_comp;
+
+    for(int w = 0; w < g->n; w++){
+        if(g->adj[v][w] == 1 && components[w] == -1){
+            matrix_recursive_visit(g,components,count_comp,w);
+        }
+    }
+}
+
+int *matrix_find_components(graph g){
+    int s, count_components = 0;
+    int * components = malloc (g->n * sizeof(int));
+    for(s = 0; s < g->n; s++){
+        components[s] = -1;
+    }
+
+    for(s = 0; s < g->n; s++){
+        if(components[s] == -1){
+            matrix_recursive_visit(g,components,count_components,s);
+            count_components++;
+        }
+    }
+    return components;
+}

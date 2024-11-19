@@ -31,5 +31,10 @@ int list_print_reverse_path(int v, int *parent);
 void list_print_path(int v, int *parent);
 int *list_width_search(Graph g, int s);
 int *dijkstra(Graph g, int s);
+int degree_ListAdj(Graph g, int u);
+int most_popular_List(Graph g);
+void print_recommendations(Graph g, int u);
+int has_path_List(Graph g, int start, int end);
+
 
 #endif

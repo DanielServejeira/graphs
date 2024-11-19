@@ -37,6 +37,7 @@ Graph_node insert_to_list(Graph_node list, int v, int weight) {
     return new_node;
 }
 
+
 void list_insert_edge(Graph g, int u, int v, int weight) {
     g->adj[v] = insert_to_list(g->adj[v], u, weight);
     g->adj[u] = insert_to_list(g->adj[u], v, weight);
@@ -201,7 +202,7 @@ int *list_width_search(Graph g, int s) {
     Queue *f = create_queue(g->n); // Cria a fila com capacidade igual ao número de vértices
 
     // Inicializa os vetores de pais e visitados
-    for (v = 0; v < g->n; v++) {
+    for(v = 0; v < g->n; v++) {
         parent[v] = -1;
         visited[v] = 0;
     }
@@ -212,7 +213,7 @@ int *list_width_search(Graph g, int s) {
     visited[s] = 1; // Marca como visitado
 
     // Realiza a busca em largura
-    while (!empty_queue(f)) {
+    while(!empty_queue(f)) {
         v = dequeue(f); // Desenfileira um vértice
 
         // Percorre a lista de adjacência do vértice v
@@ -232,3 +233,92 @@ int *list_width_search(Graph g, int s) {
 
     return parent; // Retorna o vetor de pais
 }
+
+int degree_ListAdj(Graph g, int u){
+    Graph_node aux;
+    int degree = 0;
+    for(aux = g->adj[u]; aux != NULL; aux = aux->next){
+        degree++;
+    }
+    return degree;
+}
+
+int most_popular_List(Graph g){
+    int u, max, max_degree, current_degree;
+
+    max = 0;
+    max_degree = degree_ListAdj(g, max);
+    for( u = 1; u < g->n; u++) {
+        current_degree = degree_ListAdj(g, u);
+        if(current_degree > max_degree){
+            max = u;
+            max_degree = current_degree;
+        }
+    }
+    return max;
+}
+
+/*
+ * Função que imprime vizinhos dos vizinhos do vértice
+ * de forma não repetida
+*/
+void print_recommendations(Graph g, int u){
+    Graph_node aux, rec_aux;
+    int *recommended = malloc(g->n * sizeof(int));  
+    int i;
+    for (i = 0; i < g->n; i++) {
+        recommended[i] = 0;
+    }
+
+    for (aux = g->adj[u]; aux != NULL; aux = aux->next) {
+        int v = aux->v;
+
+        for (rec_aux = g->adj[v]; rec_aux != NULL; rec_aux = rec_aux->next) {
+            int w = rec_aux->v;
+
+            if (w != u) {
+                if (!recommended[w]) {  //verifica se já não foi recomendado
+                    printf("Recommendation: %d\n", w);  
+                    recommended[w] = 1;  
+                }
+            }
+        }
+    }
+
+    free(recommended);  // Libera a memória alocada para o vetor de recomendados
+}
+
+int rec_search_list(Graph g,int* visited, int v, int t){
+    int w;
+    Graph_node aux;
+
+    if(v == t){
+        return 1;
+    }
+    visited[v] = 1;
+    for(aux = g->adj[v]; aux != NULL ; aux = aux->next){
+        w = aux->v;
+        if(!visited[w]){
+            if(rec_search_list(g, visited, w, t)){
+                return 1;
+            }
+        }
+
+    }
+    return 0;
+}
+
+int has_path_List(Graph g, int start, int end){
+    int founded_flag, i;
+    int *visited = malloc(g->n * sizeof(int));
+
+    for (i = 0 ; i < g->n ; i++){
+        visited[i] = 0;
+    }
+
+    founded_flag = rec_search_list(g,visited,start,end);
+    free(visited);
+
+    return founded_flag;
+}
+

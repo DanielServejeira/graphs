@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include<limits.h>
 
 #include "adjacency_matrix.h"
 #include "queue.h"
@@ -240,6 +241,54 @@ int matrix_rec_search(graph g, int *visited , int v, int t) {
         if (g->adj[v][w] && !visited[w])
             if (matrix_rec_search(g, visited , w, t))
                 return 1;
+    return 0;
+}
+
+/**
+ * @brief Finds the shortest path from a source vertex to all other vertices in the graph.
+ *
+ * This function finds the shortest path from a source vertex to all other vertices in the graph
+ * using Dijkstra's algorithm. It assigns a parent to each vertex in the graph.
+ *
+ * @param g The graph in which the shortest path is to be found.
+ * @param s The source vertex.
+ * @return An array containing the parent of each vertex.
+ */
+int dijkstra(graph g, int s) {
+    int *dist = malloc(g->n * sizeof(int));
+    int *visited = malloc(g->n * sizeof(int));
+    int i, u, v, min_dist, next_node;
+
+    for (i = 0; i < g->n; i++) {
+        dist[i] = INT_MAX;
+        visited[i] = 0;
+    }
+    dist[s] = 0;
+
+    for (i = 0; i < g->n - 1; i++) {
+        min_dist = INT_MAX;
+        for (v = 0; v < g->n; v++) {
+            if (!visited[v] && dist[v] < min_dist) {
+                min_dist = dist[v];
+                next_node = v;
+            }
+        }
+
+        visited[next_node] = 1;
+
+        for (v = 0; v < g->n; v++) {
+            if (!visited[v] && g->adj[next_node][v] && dist[next_node] != INT_MAX && dist[next_node] + g->adj[next_node][v] < dist[v]) {
+                dist[v] = dist[next_node] + g->adj[next_node][v];
+            }
+        }
+    }
+
+    for (i = 0; i < g->n; i++) {
+        printf("Distance from node %d to node %d is %d\n", s, i, dist[i]);
+    }
+
+    free(dist);
+    free(visited);
     return 0;
 }
 

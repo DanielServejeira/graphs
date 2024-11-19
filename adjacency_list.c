@@ -498,3 +498,42 @@ int has_path_List(AdjListGraph g, int start, int end){
     return founded_flag;
 }
 
+Path prim_minimum_spanning_tree_la(Graph g, int start) {
+    Path result;
+    result.parent = (int*) malloc(g->n * sizeof(int));
+    result.distance = (int*) malloc(g->n * sizeof(int));
+    int* visited = (int*) calloc(g->n, sizeof(int));
+    p_queue queue = create_priority_queue(g->n);
+
+    // Initialization
+    for (int i = 0; i < g->n; i++) {
+        result.distance[i] = INT_MAX;
+        result.parent[i] = -1;
+        insert_priority_queue(queue, i, INT_MAX);
+    }
+
+    result.distance[start] = 0;
+    result.parent[start] = start;
+    decrease_priority(queue, start, 0);
+
+    while (!is_empty(queue)) {
+        // Extract the vertex with the smallest cost
+        int u = extract_minimum(queue);
+        visited[u] = 1;
+
+        // Update the costs of the neighbors
+        for (Graph_node t = g->adj[u]; t != NULL; t = t->next) {
+            int v = t->v;
+            if (!visited[v] && t->weight < result.distance[v] && get_priority(queue, v) != -1) {
+                result.distance[v] = t->weight;
+                result.parent[v] = u;
+                decrease_priority(queue, v, t->weight);
+            }
+        }
+    }
+
+    free(visited);
+    free(queue);
+
+    return result;
+}

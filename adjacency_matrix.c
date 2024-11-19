@@ -16,10 +16,10 @@
  * @param n The number of vertices in the graph.
  * @return A pointer to the created graph structure.
  */
-graph matrix_create_graph(int n) {
+AdjMatrixGraph matrix_create_graph(int n) {
     int i, j;
 
-    graph g = malloc(sizeof(Adj_matrix));
+    AdjMatrixGraph g = malloc(sizeof(Adj_matrix));
     g->n = n;
     g->adj = malloc(n*sizeof(int *));
     for(i=0; i<n; i++) {
@@ -41,7 +41,7 @@ graph matrix_create_graph(int n) {
  *
  * @param g A pointer to the graph structure to be destroyed.
  */
-void matrix_destroy_matrix_graph(graph g) {
+void matrix_destroy_graph(AdjMatrixGraph g) {
     int i;
     for (i = 0; i < g->n; i++)
         free(g->adj[i]);
@@ -60,7 +60,7 @@ void matrix_destroy_matrix_graph(graph g) {
  * @param v The second vertex of the edge.
  * @param weight The weight of the edge.
  */
-void matrix_insert_edge(graph g, int u, int v, int weight) {
+void matrix_insert_edge(AdjMatrixGraph g, int u, int v, int weight) {
     g->adj[u][v] = weight;
     g->adj[v][u] = weight;
 }
@@ -75,7 +75,7 @@ void matrix_insert_edge(graph g, int u, int v, int weight) {
  * @param u The first vertex of the edge.
  * @param v The second vertex of the edge.
  */
-void matrix_remove_edge(graph g, int u, int v) {
+void matrix_remove_edge(AdjMatrixGraph g, int u, int v) {
     g->adj[u][v] = 0;
     g->adj[v][u] = 0;
 }
@@ -90,7 +90,7 @@ void matrix_remove_edge(graph g, int u, int v) {
  * @param v The second vertex of the edge.
  * @return 1 if the edge exists, 0 otherwise.
  */
-int matrix_have_edge(graph g, int u, int v) {
+int matrix_have_edge(AdjMatrixGraph g, int u, int v) {
     return g->adj[u][v];
 }
 
@@ -102,7 +102,7 @@ int matrix_have_edge(graph g, int u, int v) {
  *
  * @param g The graph whose edges are to be printed.
  */
-void matrix_print_edges(graph g) {
+void matrix_print_edges(AdjMatrixGraph g) {
     int u, v;
     for (u = 0; u < g->n; u++)
         for (v = u+1; v < g->n; v++)
@@ -119,9 +119,9 @@ void matrix_print_edges(graph g) {
  *
  * @return The graph read from standard input.
  */
-graph matrix_read_graph() {
+AdjMatrixGraph matrix_read_graph() {
     int n, m, i, u, v, w;
-    graph g;
+    AdjMatrixGraph g;
     scanf("%d %d", &n, &m);
     g = matrix_create_graph(n);
     for (i = 0; i < m; i++) {
@@ -142,7 +142,7 @@ graph matrix_read_graph() {
  * @param u The vertex whose degree is to be calculated.
  * @return The degree of the vertex.
  */
-int matrix_degree(graph g, int u) {
+int matrix_degree(AdjMatrixGraph g, int u) {
     int v, degree = 0;
     for (v = 0; v < g->n; v++)
         if (g->adj[u][v])
@@ -160,7 +160,7 @@ int matrix_degree(graph g, int u) {
  * @param g The graph in which the most popular vertex is to be found.
  * @return The most popular vertex in the graph.
  */
-int matrix_most_popular(graph g) {
+int matrix_most_popular(AdjMatrixGraph g) {
     int u, max, max_degree , current_degree;
     max = 0;
     max_degree = matrix_degree(g, 0);
@@ -184,7 +184,7 @@ int matrix_most_popular(graph g) {
  * @param g The graph for which recommendations are to be printed.
  * @param u The vertex for which recommendations are to be printed.
  */
-void matrix_print_recommendations(graph g, int u) {
+void matrix_print_recommendations(AdjMatrixGraph g, int u) {
     int v, w;
     for (v=0; v < g->n; v++) {
         if (g->adj[u][v]) {
@@ -209,7 +209,7 @@ void matrix_print_recommendations(graph g, int u) {
  * @param t The target vertex.
  * @return 1 if a path exists between the source and target vertices, 0 otherwise.
  */
-int matrix_path_exists(graph g, int s, int t) {
+int matrix_path_exists(AdjMatrixGraph g, int s, int t) {
     int found , i, *visited = malloc(g->n * sizeof(int));
     for (i=0; i < g->n; i++)
         visited[i] = 0;
@@ -232,7 +232,7 @@ int matrix_path_exists(graph g, int s, int t) {
  * @param t The target vertex.
  * @return 1 if a path exists between the source and target vertices, 0 otherwise.
  */
-int matrix_rec_search(graph g, int *visited , int v, int t) {
+int matrix_rec_search(AdjMatrixGraph g, int *visited , int v, int t) {
     int w;
     if (v == t)
         return 1;
@@ -254,10 +254,15 @@ int matrix_rec_search(graph g, int *visited , int v, int t) {
  * @param s The source vertex.
  * @return An array containing the parent of each vertex.
  */
-int dijkstra(graph g, int s) {
+int *matrix_dijkstra(AdjMatrixGraph g, int s) {
     int *dist = malloc(g->n * sizeof(int));
     int *visited = malloc(g->n * sizeof(int));
-    int i, u, v, min_dist, next_node;
+    int i, v, min_dist, next_node;
+
+    if (!dist || !visited) {
+        fprintf(stderr, "Erro ao alocar memória\n");
+        exit(EXIT_FAILURE);
+    }
 
     for (i = 0; i < g->n; i++) {
         dist[i] = INT_MAX;
@@ -267,6 +272,7 @@ int dijkstra(graph g, int s) {
 
     for (i = 0; i < g->n - 1; i++) {
         min_dist = INT_MAX;
+        next_node = -1;
         for (v = 0; v < g->n; v++) {
             if (!visited[v] && dist[v] < min_dist) {
                 min_dist = dist[v];
@@ -274,22 +280,23 @@ int dijkstra(graph g, int s) {
             }
         }
 
+        if (next_node == -1) {
+            break;
+        }
+
         visited[next_node] = 1;
 
         for (v = 0; v < g->n; v++) {
-            if (!visited[v] && g->adj[next_node][v] && dist[next_node] != INT_MAX && dist[next_node] + g->adj[next_node][v] < dist[v]) {
+            if (!visited[v] && g->adj[next_node][v] &&
+                dist[next_node] != INT_MAX &&
+                dist[next_node] + g->adj[next_node][v] < dist[v]) {
                 dist[v] = dist[next_node] + g->adj[next_node][v];
             }
         }
     }
 
-    for (i = 0; i < g->n; i++) {
-        printf("Distance from node %d to node %d is %d\n", s, i, dist[i]);
-    }
-
-    free(dist);
     free(visited);
-    return 0;
+    return dist;  // Retorna as distâncias calculadas
 }
 
 /**
@@ -303,7 +310,7 @@ int dijkstra(graph g, int s) {
  * @param s The source vertex.
  * @return An array containing the parent of each vertex.
  */
-int *matrix_width_search(graph g, int s){ // trocar para matrix_BFS
+int *matrix_width_search(AdjMatrixGraph g, int s){ // trocar para matrix_BFS
     int *parent = malloc(g->n * sizeof(int));
     int *visited = malloc(g->n * sizeof(int));
     int w,v;
@@ -318,7 +325,7 @@ int *matrix_width_search(graph g, int s){ // trocar para matrix_BFS
     parent[s] = s;
     visited[s] = 1;
 
-    while(!empty_queue(f)){
+    while(!is_queue_empty(f)){
         v = dequeue(f);
 
         for(w = 0; w < g->n; w++){
@@ -343,7 +350,7 @@ int *matrix_width_search(graph g, int s){ // trocar para matrix_BFS
  * @param v The vertex for which the path is to be printed.
  * @param parent An array containing the parent of each vertex.
  */
-void matrix_in_depth_search(graph g, int* parent, int p, int v){
+void matrix_in_depth_search(AdjMatrixGraph g, int* parent, int p, int v){
     parent[v] = p;
     int w;
     for(w = 0; w < g->n; w++){
@@ -363,7 +370,7 @@ void matrix_in_depth_search(graph g, int* parent, int p, int v){
  * @param s The source vertex.
  * @return An array containing the parent of each vertex.
  */
-int *matrix_find_paths(graph g, int s){
+int *matrix_find_paths(AdjMatrixGraph g, int s){
     int* parent = malloc (g->n * sizeof(int));
     int i;
 
@@ -383,7 +390,7 @@ int *matrix_find_paths(graph g, int s){
  * @param g The graph in which the connected components are to be found.
  * @return An array containing the component number of each vertex.
  */
-void matrix_recursive_visit(graph g, int *components, int count_comp, int v){
+void matrix_recursive_visit(AdjMatrixGraph g, int *components, int count_comp, int v){
     components[v] = count_comp;
 
     for(int w = 0; w < g->n; w++){
@@ -402,7 +409,7 @@ void matrix_recursive_visit(graph g, int *components, int count_comp, int v){
  * @param g The graph in which the connected components are to be found.
  * @return An array containing the component number of each vertex.
  */
-int *matrix_find_components(graph g){
+int *matrix_find_components(AdjMatrixGraph g){
     int s, count_components = 0;
     int * components = malloc (g->n * sizeof(int));
     for(s = 0; s < g->n; s++){
@@ -416,4 +423,32 @@ int *matrix_find_components(graph g){
         }
     }
     return components;
+}
+
+/**
+ * @brief Prints the path from a vertex to the source vertex.
+ *
+ * This function prints the path from a vertex to the source vertex using the parent array.
+ *
+ * @param v The vertex for which the path is to be printed.
+ * @param parent An array containing the parent of each vertex.
+ */
+void matrix_print_reverse_path(int v, int *parent) {
+    printf("%d", v);
+    if(parent[v] != v)
+    matrix_print_reverse_path(parent[v], parent);
+}
+
+/**
+ * @brief Prints the path from the source vertex to a vertex.
+ *
+ * This function prints the path from the source vertex to a vertex using the parent array.
+ *
+ * @param v The vertex for which the path is to be printed.
+ * @param parent An array containing the parent of each vertex.
+ */
+void matrix_print_path(int v, int *parent) {
+    if(parent[v] != v)
+        matrix_print_path(parent[v], parent);
+    printf("%d", v);
 }

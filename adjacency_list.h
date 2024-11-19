@@ -19,25 +19,25 @@ typedef struct {
     int *distance;
 } Path;
 
-typedef Adj_list *Graph;
+typedef Adj_list *AdjListGraph;
 
-Graph list_create_graph(int n);
-void list_destroy_graph(Graph g);
-void list_insert_edge(Graph g, int u, int v, int weight);
-void list_remove_edge(Graph g, int u, int v);
-int list_have_edge(Graph g, int u, int v);
-void list_print_edges(Graph g);
-void list_rec_search(Graph g, int *components, int comp, int v);
-int *list_find_components(Graph g);
-void list_in_depth_search(Graph g, int *parent, int p, int v);
+AdjListGraph list_create_graph(int n);
+void list_destroy_graph(AdjListGraph g);
+void list_insert_edge(AdjListGraph g, int u, int v, int weight);
+void list_remove_edge(AdjListGraph g, int u, int v);
+int list_have_edge(AdjListGraph g, int u, int v);
+void list_print_edges(AdjListGraph g);
+void list_rec_search(AdjListGraph g, int *components, int comp, int v);
+int *list_find_components(AdjListGraph g);
+void list_in_depth_search(AdjListGraph g, int *parent, int p, int v);
 void list_print_reverse_path(int v, int *parent);
 void list_print_path(int v, int *parent);
-int *list_width_search(Graph g, int s);
-int *dijkstra(Graph g, int s);
-int degree_ListAdj(Graph g, int u);
-int most_popular_List(Graph g);
-void print_recommendations(Graph g, int u);
-int has_path_List(Graph g, int start, int end);
-Path prim_minimum_spanning_tree_la(Graph g, int start);
+int *list_width_search(AdjListGraph g, int s);
+int *dijkstra(AdjListGraph g, int s);
+int degree_ListAdj(AdjListGraph g, int u);
+int most_popular_List(AdjListGraph g);
+void print_recommendations(AdjListGraph g, int u);
+int has_path_List(AdjListGraph g, int start, int end);
+Path prim_minimum_spanning_tree_la(AdjListGraph g, int start);
 
 #endif

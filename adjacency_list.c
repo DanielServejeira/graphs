@@ -17,9 +17,9 @@
  * @param n The number of vertices in the graph.
  * @return A pointer to the newly created graph.
  */
-Graph list_create_graph(int n) {
+AdjListGraph list_create_graph(int n) {
     int i;
-    Graph g = malloc(sizeof(Graph));
+    AdjListGraph g = malloc(sizeof(AdjListGraph));
     g->n = n;
     g->adj = malloc(n * sizeof(Graph_node));
     for (i = 0; i < n; i++)
@@ -53,7 +53,7 @@ void free_list(Graph_node list) {
  *
  * @param g A pointer to the graph to be destroyed.
  */
-void list_destroy_graph(Graph g) {
+void list_destroy_graph(AdjListGraph g) {
     int i;
     for (i = 0; i < g->n; i++)
         free_list(g->adj[i]);
@@ -91,7 +91,7 @@ Graph_node insert_to_list(Graph_node list, int v, int weight) {
  * @param v The second vertex of the edge.
  * @param weight The weight of the edge.
  */
-void list_insert_edge(Graph g, int u, int v, int weight) {
+void list_insert_edge(AdjListGraph g, int u, int v, int weight) {
     g->adj[v] = insert_to_list(g->adj[v], u, weight);
     g->adj[u] = insert_to_list(g->adj[u], v, weight);
 }
@@ -130,7 +130,7 @@ Graph_node remove_from_list(Graph_node list, int v) {
  * @param u The first vertex of the edge.
  * @param v The second vertex of the edge.
  */
-void list_remove_edge(Graph g, int u, int v) {
+void list_remove_edge(AdjListGraph g, int u, int v) {
     if (u >= g->n || v >= g->n) return; // Verifica se os vértices são válidos
     g->adj[u] = remove_from_list(g->adj[u], v);
     g->adj[v] = remove_from_list(g->adj[v], u);
@@ -146,7 +146,7 @@ void list_remove_edge(Graph g, int u, int v) {
  * @param v The second vertex of the edge.
  * @return 1 if the edge exists, 0 otherwise.
  */
-int list_have_edge(Graph g, int u, int v) {
+int list_have_edge(AdjListGraph g, int u, int v) {
     for (Graph_node t = g->adj[u]; t != NULL; t = t->next) {
         if (t->v == v)
             return 1;
@@ -162,7 +162,7 @@ int list_have_edge(Graph g, int u, int v) {
  *
  * @param g The graph whose edges are to be printed.
  */
-void list_print_edges(Graph g) {
+void list_print_edges(AdjListGraph g) {
     int u;
     Graph_node t;
     for (u=0; u < g->n; u++)
@@ -181,7 +181,7 @@ void list_print_edges(Graph g) {
  * @param comp The current component number.
  * @param v The current vertex being visited.
  */
-void list_rec_search(Graph g, int *components , int comp, int v) {
+void list_rec_search(AdjListGraph g, int *components , int comp, int v) {
     Graph_node t;
     components[v] = comp;           
 
@@ -199,7 +199,7 @@ void list_rec_search(Graph g, int *components , int comp, int v) {
  * @param g The graph in which connected components are to be found.
  * @return An array containing the component number of each vertex.
  */
-int *list_find_components(Graph g) {
+int *list_find_components(AdjListGraph g) {
     int s, c = 0, *components = malloc(g->n * sizeof(int));
 
     for (s = 0; s < g->n; s++)
@@ -225,7 +225,7 @@ int *list_find_components(Graph g) {
  * @param p The parent of the current vertex.
  * @param v The current vertex being visited.
  */
-void list_in_depth_search(Graph g, int *parent, int p, int v) {
+void list_in_depth_search(AdjListGraph g, int *parent, int p, int v) {
     Graph_node t;
     parent[v] = p;
 
@@ -244,7 +244,7 @@ void list_in_depth_search(Graph g, int *parent, int p, int v) {
  * @param s The source vertex.
  * @return An array containing the parent of each vertex.
  */
-int *list_find_paths(Graph g, int s) {
+int *list_find_paths(AdjListGraph g, int s) {
     int i, *parent = malloc(g->n * sizeof(int));
 
     for (i = 0; i < g->n; i++)
@@ -292,7 +292,7 @@ void list_print_path(int v, int *parent) {
  * @param s The source vertex.
  * @return An array containing the parent of each vertex.
  */
-int *dijkstra(Graph g, int s) {
+int *list_dijkstra(AdjListGraph g, int s) {
     int v, *parent = malloc(g->n * sizeof(int));
     Graph_node t;
     p_queue h = create_p_queue(g->n);
@@ -324,7 +324,7 @@ int *dijkstra(Graph g, int s) {
  * @param s The source vertex.
  * @return An array containing the parent of each vertex.
  */
-int *list_width_search(Graph g, int s) {
+int *list_width_search(AdjListGraph g, int s) {
     // Verificar se o vértice inicial é válido
     
 
@@ -334,7 +334,7 @@ int *list_width_search(Graph g, int s) {
     Queue *f = create_queue(g->n); // Cria a fila com capacidade igual ao número de vértices
 
     // Inicializa os vetores de pais e visitados
-    for(v = 0; v < g->n; v++) {
+    for (v = 0; v < g->n; v++) {
         parent[v] = -1;
         visited[v] = 0;
     }
@@ -375,7 +375,7 @@ int *list_width_search(Graph g, int s) {
  * @param u The vertex for which the degree is to be calculated.
  * @return The degree of the vertex.
  */
-int degree_ListAdj(Graph g, int u){
+int degree_ListAdj(AdjListGraph g, int u){
     Graph_node aux;
     int degree = 0;
     for(aux = g->adj[u]; aux != NULL; aux = aux->next){
@@ -392,7 +392,7 @@ int degree_ListAdj(Graph g, int u){
  * @param g The graph in which the most popular vertex is to be found.
  * @return The most popular vertex in the graph.
  */
-int most_popular_List(Graph g){
+int most_popular_List(AdjListGraph g){
     int u, max, max_degree, current_degree;
 
     max = 0;
@@ -417,7 +417,7 @@ int most_popular_List(Graph g){
  * @param g The graph for which recommendations are to be printed.
  * @param u The vertex for which recommendations are to be printed.
  */
-void print_recommendations(Graph g, int u){
+void print_recommendations(AdjListGraph g, int u){
     Graph_node aux, rec_aux;
     int *recommended = malloc(g->n * sizeof(int));  
     int i;
@@ -454,7 +454,7 @@ void print_recommendations(Graph g, int u){
  * @param t The target vertex.
  * @return 1 if a path exists, 0 otherwise.
  */
-int rec_search_list(Graph g,int* visited, int v, int t){
+int rec_search_list(AdjListGraph g,int* visited, int v, int t){
     int w;
     Graph_node aux;
 
@@ -484,7 +484,7 @@ int rec_search_list(Graph g,int* visited, int v, int t){
  * @param end The target vertex.
  * @return 1 if a path exists, 0 otherwise.
  */
-int has_path_List(Graph g, int start, int end){
+int has_path_List(AdjListGraph g, int start, int end){
     int founded_flag, i;
     int *visited = malloc(g->n * sizeof(int));
 

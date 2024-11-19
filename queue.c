@@ -17,7 +17,7 @@ Queue *create_queue(int capacity) {
 
 // Libera toda a memória associada à fila
 void destroy_queue(Queue *queue) {
-    while (!is_empty(queue)) {
+    while (!is_queue_empty(queue)) {
         dequeue(queue);
     }
     free(queue);
@@ -30,31 +30,31 @@ void enqueue(Queue *queue, int data) {
         return;
     }
 
-    Node *new_node = (Node *)malloc(sizeof(Node));
-    if (!new_node) {
+    QueueNode *new_QueueNode = (QueueNode *)malloc(sizeof(QueueNode));
+    if (!new_QueueNode) {
         fprintf(stderr, "Memory allocation error\n");
         exit(EXIT_FAILURE);
     }
-    new_node->data = data;
-    new_node->next = NULL;
+    new_QueueNode->data = data;
+    new_QueueNode->next = NULL;
 
     if (queue->rear == NULL) {
-        queue->front = queue->rear = new_node;
+        queue->front = queue->rear = new_QueueNode;
     } else {
-        queue->rear->next = new_node;
-        queue->rear = new_node;
+        queue->rear->next = new_QueueNode;
+        queue->rear = new_QueueNode;
     }
     queue->size++;
 }
 
 // Remove e retorna o elemento da frente da fila
 int dequeue(Queue *queue) {
-    if (is_empty(queue)) {
+    if (is_queue_empty(queue)) {
         fprintf(stderr, "Queue is empty. Cannot dequeue.\n");
         return -1; // Retorna -1 para indicar falha
     }
 
-    Node *temp = queue->front;
+    QueueNode *temp = queue->front;
     int data = temp->data;
 
     queue->front = queue->front->next;
@@ -68,7 +68,7 @@ int dequeue(Queue *queue) {
 
 // Retorna o elemento da frente da fila sem removê-lo
 int peek(Queue *queue) {
-    if (is_empty(queue)) {
+    if (is_queue_empty(queue)) {
         fprintf(stderr, "Queue is empty. Cannot peek.\n");
         return -1; // Retorna -1 para indicar fila vazia
     }
@@ -76,7 +76,7 @@ int peek(Queue *queue) {
 }
 
 // Verifica se a fila está vazia
-int is_empty(Queue *queue) {
+int is_queue_empty(Queue *queue) {
     return queue->size == 0;
 }
 

@@ -124,50 +124,13 @@ int *list_find_paths(Graph g, int s) {
 void list_print_reverse_path(int v, int *parent) {
     printf("%d", v);
     if(parent[v] != v)
-    print_reverse_path(parent[v], parent);
+    list_print_reverse_path(parent[v], parent);
 }
 
 void list_print_path(int v, int *parent) {
     if(parent[v] != v)
         list_print_path(parent[v], parent);
     printf("%d", v);
-}
-
-int *list_width_search(Graph g, int s) { //ARRUMAR
-    if (s < 0 || s >= g->n) {
-        fprintf(stderr, "Error: Invalid starting vertex.\n");
-        return NULL;
-    }
-    
-    int w, v;
-    int *parent = malloc(g->n * sizeof(int));
-    int *visited = malloc(g->n * sizeof(int));
-    Queue *f = create_queue(g->n);
-
-    for (v = 0; v < g->n; v++) {
-        parent[v] = -1;
-        visited[v] = 0;
-    }
-
-    enqueue(f,s);
-    parent[s] = s;
-    visited[s] = 1;
-
-    while(!empty_queue(f)) {
-        v = dequeue(f);
-        for (Graph_node aux = g->adj[v]; aux != NULL; aux = aux->next){     //possivel erro
-            w = aux->v;
-            if (!visited[w]) {
-                visited[w] = 1;
-                parent[w] = v;
-                enqueue(f, w);
-            }
-        }
-    }
-
-    destroy_queue(f);
-    free(visited);
-    return parent;
 }
 
 int *dijkstra(Graph g, int s) {
@@ -180,7 +143,7 @@ int *dijkstra(Graph g, int s) {
     }
     parent[s] = s;
     decrease_priority(h, s, 0);
-    while (!is_empty(h)) {
+    while (!is_prior_queue_empty(h)) {
         v = extract_min(h);
         if (priority(h, v) != INT_MAX)
             for (t = g->adj[v]; t != NULL; t = t->next)
@@ -213,7 +176,7 @@ int *list_width_search(Graph g, int s) {
     visited[s] = 1; // Marca como visitado
 
     // Realiza a busca em largura
-    while(!empty_queue(f)) {
+    while (!is_queue_empty(f)) {
         v = dequeue(f); // Desenfileira um vértice
 
         // Percorre a lista de adjacência do vértice v

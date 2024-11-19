@@ -21,5 +21,6 @@ int matrix_most_popular(graph g);
 void matrix_print_recommendations(graph g, int u);
 int matrix_path_exists(graph g, int s, int t);
 int matrix_rec_search(graph g, int *visited , int v, int t);
+int dijkstra(graph g, int s);
 
 #endif

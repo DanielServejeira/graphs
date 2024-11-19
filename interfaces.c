@@ -63,6 +63,8 @@ void run_english_interface() {
                        "\n[7] <- Find connected components"
                        "\n[8] <- Find paths"
                        "\n[9] <- Find shortest path"
+                       "\n[10] <- Dijkstra"
+                       "\n[11] <- Minimum Spanning Tree"
                        "\n[0] <- Exit\n\n");
 
                 scanf("%d", &choice);
@@ -194,6 +196,39 @@ void run_english_interface() {
                     free(path);
                     break;
 
+                case 10:
+                    if (adj_list_graph == NULL) {
+                        printf("Graph does not exist. Please create it before finding the shortest path.\n\n");
+                        break;
+                    }
+                    printf("Enter the source vertex: ");
+                    scanf("%d", &s);
+                    p = dijkstra(adj_list_graph, s);
+                    for (int i = 0; i < adj_list_graph->n; i++) {
+                        printf("Shortest path from %d to %d: ", s, i);
+                        list_print_reverse_path(i, p);
+                        printf("\n");
+                    }
+                    free(p);
+                    break;
+                case 11:
+                    if (adj_list_graph == NULL)
+                    {
+                        printf("Graph does not exist. Please create it before finding the minimum spanning tree.\n\n");
+                        break;
+                    }
+                    printf("Enter the source vertex: ");
+                    scanf("%d", &s);
+                    p = dijkstra(adj_list_graph, s);
+                    for (int i = 0; i < adj_list_graph->n; i++)
+                    {
+                        printf("Minimum spanning tree from %d to %d: ", s, i);
+                        list_print_reverse_path(i, p);
+                        printf("\n");
+                    }
+                    free(p);
+                    break;
+
                 default:
                     printf("Invalid option. Please select a valid operation.\n\n");
                     break;
@@ -219,6 +254,8 @@ void run_english_interface() {
                        "\n[11] <- Breadth First Search"
                        "\n[12] <- Depth First Search"
                        "\n[13] <- Find connected components"
+                       "\n[14] <- Dijkstra"
+                       "\n[15] <- Minimum Spanning Tree"
                        "\n[0] <- Exit\n\n");
 
                 scanf("%d", &choice);
@@ -391,6 +428,42 @@ void run_english_interface() {
                     components = matrix_find_components(adj_matrix_graph);
                     printf("Graph has %d connected components.\n\n", components[0]);
                     free(components);
+                    break;
+
+                case 14:
+                    if (adj_matrix_graph == NULL)
+                    {
+                        printf("Graph does not exist. Please create it before finding the shortest path.\n\n");
+                        break;
+                    }
+                    printf("Enter the source vertex: ");
+                    scanf("%d", &s);
+                    p = dijkstra(adj_matrix_graph, s);
+                    for (int i = 0; i < adj_matrix_graph->n; i++)
+                    {
+                        printf("Shortest path from %d to %d: ", s, i);
+                        matrix_print_reverse_path(i, p);
+                        printf("\n");
+                    }
+                    free(p);
+                    break;
+
+                case 15:
+                    if (adj_matrix_graph == NULL)
+                    {
+                        printf("Graph does not exist. Please create it before finding the minimum spanning tree.\n\n");
+                        break;
+                    }
+                    printf("Enter the source vertex: ");
+                    scanf("%d", &s);
+                    p = dijkstra(adj_matrix_graph, s);
+                    for (int i = 0; i < adj_matrix_graph->n; i++)
+                    {
+                        printf("Minimum spanning tree from %d to %d: ", s, i);
+                        matrix_print_reverse_path(i, p);
+                        printf("\n");
+                    }
+                    free(p);
                     break;
 
                 default:

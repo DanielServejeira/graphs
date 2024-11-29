@@ -91,4 +91,6 @@ run_portuguese_interface();
 
 This project is licensed under the MIT License. See the `LICENSE` file for details.
 
+---
+
 This README serves as a starting point for understanding and utilizing the graph library effectively. For more information, consult the source code and function comments.

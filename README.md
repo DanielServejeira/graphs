@@ -1,4 +1,4 @@
-# Graph Library in C
+# Graph Implementation in C
 
 This project implements a comprehensive library for working with **graphs** in C, using **adjacency lists** and **adjacency matrices**. It includes basic graph operations, traversal algorithms, and graph-related utilities. Below is a detailed overview of the files, structures, and functionalities provided.
 

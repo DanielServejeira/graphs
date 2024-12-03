@@ -15,7 +15,7 @@ This project implements a comprehensive library for working with **graphs** in C
 
 ## Project Overview
 
-This library provides an efficient way to handle graphs with support for **adjacency lists** and **adjacency matrices**, making it versatile for different use cases. The implementation includes graph traversal (DFS, BFS), pathfinding algorithms (Dijkstra, Prim's MST), and utility functions for analyzing graph properties.
+This project provides an efficient way to handle graphs with support for **adjacency lists** and **adjacency matrices**, making it versatile for different use cases. The implementation includes graph traversal (DFS, BFS), pathfinding algorithms (Dijkstra, Prim's MST), and utility functions for analyzing graph properties.
 
 ---
 
